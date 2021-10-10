@@ -4,11 +4,13 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-    color: rgb(254, 247, 40);
+    color: #fff;
     padding: 100px;
     background-color: black;
     font-family: 'Helvetica Neue';
     font-size: 2em;
+
+    overflow: scroll;
 }
 
 .slide.active{ display: flex; }
@@ -16,18 +18,11 @@
 
 .theme-red { background-color: tomato; }
 
+.theme-wait p{ opacity: .2; }
+
 .index-0{
     justify-content:left;
     background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('content/flock-1599.jpg');
     background-size: cover;
-}
-
-.index-3 ul{
-    display: flex;
-    padding:0 25px 0 0;
-    list-style: none;
-}
-.index-3 ul ul{
-    padding: 0;
-    font-size: .6em;
+    color: rgb(254, 247, 40);
 }
