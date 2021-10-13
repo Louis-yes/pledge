@@ -28,7 +28,6 @@ function pressie(md){
     state.slides = makeSlides()
 
     // add nav element, to hold focus 
-    makeNavElement()
     keyboardEvents()
 
     return state.slides
@@ -65,6 +64,7 @@ function pressie(md){
         nav.style.opacity = 0
         nav.tabIndex = "0"
         document.body.appendChild(nav)
+        return nav
     }
 
     /**
@@ -81,6 +81,8 @@ function pressie(md){
      * initialises the keyboard event listeners
      */
     function keyboardEvents(){
+        const nav = makeNavElement()
+
         window.addEventListener('keydown', (e)=>{
             if(document.activeElement === document.body || document.activeElement === nav) {
                 if(e.code == "ArrowLeft"){

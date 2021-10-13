@@ -26,3 +26,36 @@
     background-size: cover;
     color: rgb(254, 247, 40);
 }
+
+.bank .name{
+    border: none;
+    outline: none;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    width: auto;
+}
+
+.bank:hover .remove {
+    opacity: 1;
+}
+
+.bank input[type="radio"],
+.bank input[type="checkbox"]{
+    opacity: 0;
+    width: 0;
+}
+
+.bank input[type="radio"]:checked + label,
+.bank input[type="checkbox"]:checked + label {
+    color: red;
+}
+
+.bank form:focus-within {
+   outline: 1px solid #fff;
+}
+
+.passed {
+    color: red;
+}
