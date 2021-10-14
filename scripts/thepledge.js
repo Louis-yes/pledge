@@ -111,7 +111,7 @@ function thePledge(el){
             return this.roundThreeScore
         },
         addBank(){
-            this.banks[this.banks.length] = new Bank()
+            this.banks[this.banks.length] = new Bank({name: "animal"})
         },
         removeBank(i){
             this.banks.splice(i,1)
