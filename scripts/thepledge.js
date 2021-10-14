@@ -3,7 +3,8 @@ function thePledge(el){
         new Bank({
             name: "Armadillo", 
             tokens: 6, 
-            commitments: [0,0,0]
+            commitments: [0,0,0],
+            lobbyVotes: 2
         }),
         new Bank({
             name: "Vulture", 
@@ -85,14 +86,29 @@ function thePledge(el){
         },
         get roundThreeScore() {
             const commits = this.banks.reduce((pv,cv)=>{return pv + cv.commitments[2]}, 0)
-            const roundThreeBanks = roundTwoBanks.map((cb, i) => {
+            const passedRegulation = this.regulations.find((r)=>{ r.passed })
+            const roundThreeBanks = this.roundTwoScore.banks.map((cb, i) => {
                 const bb = Object.assign({}, cb)
+                if(commits == 0){ return bb }
+                if( passedRegulation 
+                    && passedRegulation.name == "Carbon Credits"
+                    && bb.commitments[1] < 1 
+                    && bb.commitments[2] > 0 )
+                { bb.tokens -= 3 }
+                if(commits != this.banks.length){
+                    if(bb.commitments[2] > 0){
+                        bb.tokens ++
+                    } else {
+                        bb.tokens -= 2
+                    }
+                }
                 // same as round two atm, todo
                 return bb
             })
+            return {banks: roundThreeBanks, commits: commits}
         },
         get finalScore(){
-            return this.banks // .map(round three score) 
+            return this.roundThreeScore
         },
         addBank(){
             this.banks[this.banks.length] = new Bank()

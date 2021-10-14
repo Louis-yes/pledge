@@ -7,6 +7,8 @@ const deckContent = `
 
 ---
 
+<!-- Bank introduction screen -->
+
 <div v-scope>
     <div class="bank" v-for="(bank,i) in banks" :key="i">
         <h2><input class="bn input name" v-model="bank.name" type="text"></h2>
@@ -19,19 +21,20 @@ const deckContent = `
 </div>
 
 ---
-
+<!-- Bank commitments screen -->
 <div v-scope>
     <div class="bank" v-for="(bank,i) in banks" :key="i">
         <h2> {{bank.name}} Bank</h2>
         <form class="commitments">
-        <input type="radio" v-model="bank.commitments[0]" name="commitment" :id="bank.name + '-raise'" value="1"><label :for="bank.name + '-raise'" class="pointer">Raise</label> 
-        <input type="radio" v-model="bank.commitments[0]" name="commitment" :id="bank.name + '-stick'" value="0"><label :for="bank.name + '-stick'" class="pointer">Stick</label> 
+        <input type="radio" v-model="bank.commitments[0]" name="commitment" :id="bank.name + '-raisecc0'" value="1"><label :for="bank.name + '-raisecc0'" class="pointer">Raise</label> 
+        <input type="radio" v-model="bank.commitments[0]" name="commitment" :id="bank.name + '-stickcc0'" value="0"><label :for="bank.name + '-stickcc0'" class="pointer">Stick</label> 
         </form>
     </div>
 </div>
 
 ---
 
+<!-- Points round up 1 -->
 <div v-scope>
     <h1>
         Points for round one
@@ -46,7 +49,9 @@ const deckContent = `
 
 ---
 
+<!-- lobby votes -->
 <div v-scope>
+    <h1>Lobbying</h1>
     <div class="bank"  v-for="(bank,i) in banks" :key="i">
         <h2>{{bank.name}}</h2>
         <button @click="bank.lobbyVotes++" class="pointer underline-hover button bn bg-black white">Vote</button>
@@ -56,6 +61,7 @@ const deckContent = `
 
 ---
 
+<!-- Public Pressure -->
 <div v-scope>
         <div class="bank" v-for="(bank,i) in banks" :key="i">
                 <h2> {{bank.name}} Bank</h2>
@@ -67,17 +73,21 @@ const deckContent = `
 
 ---
 
+<!-- Bank commitments screen 2 -->
+
 <div v-scope>
     <div class="bank" v-for="(bank,i) in banks" :key="i">
         <h2> {{bank.name}} Bank</h2>
         <form class="commitments">
-        <input type="radio" v-model="bank.commitments[1]" name="commitment" :id="bank.name + '-raise'" value="1"><label :for="bank.name + '-raise'" class="pointer">Raise</label> 
-        <input type="radio" v-model="bank.commitments[1]" name="commitment" :id="bank.name + '-stick'" value="0"><label :for="bank.name + '-stick'" class="pointer">Stick</label> 
+        <input type="radio" v-model="bank.commitments[1]" name="commitment" :id="bank.name + '-raisecc1'" value="1"><label :for="bank.name + '-raisecc1'" class="pointer">Raise</label> 
+        <input type="radio" v-model="bank.commitments[1]" name="commitment" :id="bank.name + '-stickcc1'" value="0"><label :for="bank.name + '-stickcc1'" class="pointer">Stick</label> 
         </form>
     </div>
 </div>
 
 ---
+
+<!-- Points round up 2 -->
 
 <div v-scope>
     <h1>
@@ -93,6 +103,7 @@ const deckContent = `
 
 ---
 
+<!-- Regulations -->
 
 <div v-scope>
     <div class="bank mb4"  v-for="(bank,i) in banks" :key="i">
@@ -108,13 +119,31 @@ const deckContent = `
 
 ---
 
+<!-- Bank commitments screen 2 -->
+
 <div v-scope>
     <div class="bank" v-for="(bank,i) in banks" :key="i">
         <h2> {{bank.name}} Bank</h2>
         <form class="commitments">
-        <input type="radio" v-model="bank.commitments[2]" name="commitment" :id="bank.name + '-raise'" value="1"><label :for="bank.name + '-raise'" class="pointer">Raise</label> 
-        <input type="radio" v-model="bank.commitments[2]" name="commitment" :id="bank.name + '-stick'" value="0"><label :for="bank.name + '-stick'" class="pointer">Stick</label>
+        <input type="radio" v-model="bank.commitments[2]" name="commitment" :id="bank.name + '-raisecc2'" value="1"><label :for="bank.name + '-raisecc2'" class="pointer">Raise</label> 
+        <input type="radio" v-model="bank.commitments[2]" name="commitment" :id="bank.name + '-stickcc2'" value="0"><label :for="bank.name + '-stickcc2'" class="pointer">Stick</label> 
         </form>
+    </div>
+</div>
+
+---
+
+<!-- Bank commitments screen 2 -->
+
+<div v-scope>
+    <h1>
+        Points for round three
+    </h1>
+    <div class="bank" v-for="(bank,i) in roundThreeScore.banks" :key="i">
+        <h2> {{bank.name}} Bank</h2>
+        <span v-for="t in bank.tokens" :key="t">
+            *
+        </span>
     </div>
 </div>
 
