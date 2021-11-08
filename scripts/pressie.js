@@ -17,17 +17,40 @@
     Currently an extreme WIP, likely to change drastically
     Further documentation to come 🚢
 
+    Todo
+    [x] Add transitions
+
+    [ ] Move slide resticiton logic into set slide function
+    [ ] Let you add attrs to the slides
+    [ ] hidden slide functionality? or you know, some class you can check
+    [ ] emit slide movement event, remove transition animation logic from here
+
 *************************************************************/
 
 
-function pressie(md){
+function pressie(md, opts){
     const state = {
         currentSlide : Number(window.location.hash.replace("#",'')) || 0,
         length : window.deck().split('---').length - 1,
     }
-    state.slides = makeSlides()
 
-    // add nav element, to hold focus 
+    const options = {
+        globalTransition : "--transition-fade"
+    }
+
+    const classes = {
+        beforeLeave: "before-leave",
+        beforeEnter: "before-enter",
+        active: "active",
+        next: "next",
+        slide: "slide",
+        index: "index-"
+    }
+
+    state.slides = makeSlides()
+    // add nav element, to hold focus and dispatch events 
+    state.nav = makeNavElement()
+
     keyboardEvents()
 
     return state.slides
@@ -48,8 +71,8 @@ function pressie(md){
             let themeTest = themeRegex.exec(ss)
             let theme = themeTest ? 'theme-'+themeTest[2] : ''
             return `
-                <section class="slide index-${i} ${i == state.currentSlide ? 'active': ''} ${theme}">
-                    <article>${marked(ss)}</article>
+                <section class="${classes.slide} ${options.globalTransition} ${classes.index}${i} ${i == state.currentSlide ? classes.active: ''} ${theme}">
+                    <article>${marked.parse(ss)}</article>
                 </section>`
             })
     }
@@ -72,19 +95,25 @@ function pressie(md){
      * @param {*} i index of slide to set 
      */
     function setSlide(i){
+        // current active slide
+        const currentSlide = document.querySelector(`.${classes.slide}.${classes.active}`)
+        // slide to set
+        const newSlide = document.querySelector(`.${classes.slide}.${classes.index}${i}`)
+        // create event to use
+        const event = new CustomEvent('pressie-slide-change', { previous: currentSlide, next: currentSlide });
+
         window.location.hash = i
-        document.querySelectorAll('.slide').forEach(el => { el.classList.remove('active') })
-        document.querySelector('.index-'+i).classList.add("active")
+        currentSlide.classList.remove(classes.active)
+        newSlide.classList.add(classes.active)
+        state.nav.dispatch(event)
     }
 
     /**
      * initialises the keyboard event listeners
      */
     function keyboardEvents(){
-        const nav = makeNavElement()
-
         window.addEventListener('keydown', (e)=>{
-            if(document.activeElement === document.body || document.activeElement === nav) {
+            if(document.activeElement === document.body || document.activeElement === state.nav) {
                 if(e.code == "ArrowLeft"){
                     if (state.currentSlide == 0)  return 
                     state.currentSlide --
@@ -94,9 +123,7 @@ function pressie(md){
                     state.currentSlide ++
                     setSlide(state.currentSlide)
                 }
-    
             }
         })
     }
-
 }
