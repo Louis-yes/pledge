@@ -1,23 +1,42 @@
 const deckContent = `
 <!-- This is where the slide deck starts! treat it like markdown, but you can also include html and vue-petite components :) -->
 
-<!-- name=title-page -->
+<slide class="landing-page">
 
-# Welcome to The Pledge.
+# The Pledge.
 
 ---
 
+# Welcome to **The Pledge.**
+This is a game about the transition to <span data-tooltip="#net-zero">net zero.</span>  
+*(When you see highlighted text, click for an explanation.)*  
+  
+You’ll be playing in teams. Each team is a different bank.  
+  
+<span class="next-prompt">When you're ready, click this arrow to proceed</span>
+
+<div id="net-zero" class="tooltip">
+The state of carbon neutrality,
+where all carbon emissions are balanced by removal. 
+
+*Click anywhere to close this message.*
+</div>
+---
+
 <!-- Bank introduction screen -->
+### Lets look at the banks
 
 <div v-scope>
-    <div class="bank" v-for="(bank,i) in banks" :key="i">
-        <h2><input class="bn input name" v-model="bank.name" type="text"></h2>
-        <span v-for="t in bank.tokens" :key="t">
-            *
-        </span>
-        <span @click="removeBank(i)" class="db pointer underline-hover o-0 remove">x</span>
+    <div v-if="banks.length < 1">
+        <div class="add-bank bg-btn"></div>
+        <span>Click to add bank</span>
+    </div> 
+    <div v-else>
+        <div class="bank" v-for="(bank,i) in banks" :key="i">
+            <span @click="removeBank(i)" class="db pointer underline-hover o-0 remove">x</span>
+        </div>
+        <span @click="addBank" class="mt3 underline-hover dib pointer add">Add Bank</span>
     </div>
-    <span @click="addBank" class="mt3 underline-hover dib pointer add">Add Bank</span>
 </div>
 
 ---
@@ -153,6 +172,6 @@ Thank you for playing *The Pledge*
 
 <!-- This is where the slide deck ends! Don't edit further than here unless you know what you're doing! -->
 `
-function deck(){
+export default function deck(){
     return deckContent
 }

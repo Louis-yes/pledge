@@ -1,0 +1,232 @@
+@font-face {
+    font-family: Newsreader;
+    src: url(Newsreader-VariableFont_opsz\,wght.ttf);
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Newsreader;
+    src: url(Newsreader-Italic-VariableFont_opsz\,wght.ttf);
+    font-style: italic;
+}
+
+/* Universal styles */
+:root {
+    --bg: #f7f7f6;
+
+    --green: #3D8169;
+    --green-hl: #88C673;
+    --orange: #f2a663;
+    --orange-light: #f4da6c;
+
+    --font: Newsreader;
+    --color: #222;
+    --p: 3.5rem;
+    --pp: 2.4rem;
+    --ppp: 2rem;
+    --heavy: 500;
+    --medium: 400;
+    --light: 300;
+
+}
+
+*:focus, *:active {
+    outline: none;
+}
+
+body { 
+    background-color: var(--bg);
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+
+/**********************************************************************************************/
+/**********************************************************************************************/
+/**********************************************************************************************/
+
+/* Pressie styles */
+
+.pressie-nav {
+    position: fixed; bottom: 50px; right: 50px; 
+}
+
+.pressie-nav .next { 
+    background-color: var(--green);
+    font-size: 0;
+}
+
+.pressie-nav .next svg {
+    width: 44px; height: 44px; fill: #fff; pointer-events: none;
+} 
+
+.pressie-nav .previous { display: none; }
+
+
+/**********************************************************************************************/
+/**********************************************************************************************/
+/**********************************************************************************************/
+
+/* Slide deck styles */
+
+.slide {
+    display: none;
+    width: 100vw; height: 100vh;
+
+    padding: 86px;
+
+    font-family: var(--font); font-size: 1.5em; color: var(--color);
+    font-size: var(--p);
+}
+.slide.active{ display: flex; }
+
+.slide h1,
+.slide h2,
+.slide h3 {
+    font-weight: var(--medium);
+    margin-top: 0;
+}
+
+.slide strong { font-weight: var(--heavy); }
+.slide em { color: var(--green); }
+
+/* Next prompt */
+.next-prompt {
+    position: fixed;
+    right: 211px;
+    bottom: 84px;   
+    text-align: right;
+    font-size: var(--pp);
+    font-weight: var(--light);
+    opacity: .3;
+}
+
+/* Title page */
+.index-0{ justify-content:left; }
+.index-0 h1 { 
+    position: absolute;
+    left: 100px;
+    bottom: 50px;
+    margin: 0;
+
+    font-size: 3em;
+    font-weight: 600;
+}
+
+
+/**********************************************************************************************/
+/**********************************************************************************************/
+/**********************************************************************************************/
+
+/* Interactive Components */
+
+
+/* Generic */
+.bg-btn {
+    border-radius: 50%;
+    width: 118px; height: 118px;
+    cursor: pointer;
+    transition: transform .1s ease-in-out;
+    align-items: center; 
+    display: flex;
+    justify-content: center;
+
+}
+.bg-btn:hover { transform: translateY(-3px); }
+
+
+/* Bank Designs */
+
+.add-bank {
+    background-color: var(--green-hl);
+}
+
+.bank .name{
+    border: none;
+    outline: none;
+    color: white;
+
+    font-weight: bold;
+    display: inline-block;
+    width: auto;
+}
+
+.bank:hover .remove {
+    opacity: 1;
+}
+
+.bank input[type="radio"],
+.bank input[type="checkbox"]{
+    opacity: 0;
+    width: 0;
+}
+
+.bank input[type="radio"]:checked + label,
+.bank input[type="checkbox"]:checked + label {
+    color: red;
+}
+
+.bank form:focus-within {
+   outline: 1px solid #fff;
+}
+
+.passed {
+    color: red;
+}
+
+.--transition-fade {
+    opacity: 1;
+    transition:opacity .3s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.--transition-fade.before-leave, .--transition-fade.before-enter {
+    opacity: 0;
+}
+
+/**********************************************************************************************/
+/**********************************************************************************************/
+/**********************************************************************************************/
+
+/* --------- */
+/* Tooltips */
+/* --------- */
+
+[data-tooltip] {
+    background-color: var(--orange-light);
+    cursor: pointer;
+}
+
+.tooltip {
+    display: none;
+    width: 650px;
+    padding: 68px;
+    background-color: #fff;
+    border-radius: 50px;
+
+    text-align: center;
+    font-size: var(--pp);
+}
+
+.tooltip em {
+    display: inline-block;
+    margin-top: 2em;
+
+    color: var(--green);
+    font-size: var(--ppp);
+}
+
+.tooltip p { margin: 0; }
+
+.tooltip-backdrop {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background: rgba(0,0,0,.6);
+}
+
+.tooltip.active,
+.tooltip-backdrop.active { display: block; }

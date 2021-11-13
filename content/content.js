@@ -156,17 +156,27 @@ You have five minutes.
 Good luck. 
 
 ---
-<!-- theme=wait -->
+<!-- theme=river -->
 
-Wait 5 mins.
+![](content/river.gif)
 
 ---
-
+<!-- Louis todo -->
 Welcome back. 
 
 Each bank introduce yourself: which animal are you, and why?
-<!-- Louis todo -->
-<!-- initialise banks -->
+
+<div v-scope >
+  <div v-for="(bank, i) in banks" :key="i">
+    <div>bank {{i}}</div>
+    <div>name: <input v-model="bank.name" /></div>
+    <div>tokens: {{bank.tokens}}</div>
+    <button @click="removeBank(i)">remove</button>
+  </div>
+  <div>
+    <button @click="addBank">Add new bank</button>
+  </div>
+</div>
 
 ---
 
@@ -211,22 +221,36 @@ The voting person from each bank explains their decision.
 Our scores so far:
 <!-- score review  -->
 <!-- Louis todo -->
-*We see the scores for each bank.*
+<table v-scope >
+  <tr v-for="(b,i) in roundOneScore" :key="i">
+    <td>{{b.name}} :</td><td>{{b.tokens}}<td>
+  </tr>
+</table>
 
 ---
 
 <!-- Louis todo -->
-Those banks that have lost tokens:
-So ____ Bank and ____ Bank are in some financial trouble. Shareholders are concerned, there are questions about stock prices. 
 
-These banks may become financially unviable if they continue on this path.
+<span >
+<span>
 
+So <span v-for="(b,i) in firstRoundLost" :key="i">{{b.name}} Bank {{i < firstRoundLost.length - 1 ? "and ": ""}}</span> {{ firstRoundLost.length > 1 ? "are" : "is" }} in some financial trouble. Shareholders are concerned, there are questions about stock prices. 
+
+{{ firstRoundLost.length > 1 ? "These banks" : firstRoundLost[0].name + " Bank"}} may become financially unviable if they continue on this path.
+
+</span>
+<span v-else >
+
+  all good
+
+</span>
+</span>
 ---
 
 <!-- Louis todo -->
 At the end of the game, we'll use the total number of raised commitments to measure of how well the financial sector has transitioned to net zero.
 
-So far, out of a total possible __ raised commitments, we have __.
+<span v-scope>So far, out of a total possible {{banks.length}} raised commitments, we have {{roundOneScore.banks.reduce((pv,cv)=>{return pv + cv.commitments[0]},0)}}.</span>
 
 ---
 

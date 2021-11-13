@@ -1,0 +1,23 @@
+{
+  "name": "pledge",
+  "version": "1.0.0",
+  "description": "The Pledge",
+  "main": "index.js",
+  "repository": "https://github.com/Louis-yes/pledge.git",
+  "author": "Louis <luegraham@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  },
+  "devDependencies": {
+    "webpack": "^5.63.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.10.2",
+    "animejs": "^3.2.1",
+    "marked": "^4.0.0",
+    "petite-vue": "^0.3.0"
+  }
+}
