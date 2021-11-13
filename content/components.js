@@ -24,18 +24,25 @@ where all carbon emissions are balanced by removal.
 ---
 
 <!-- Bank introduction screen -->
+<slide class="bank-intro-screen">
+
 ### Lets look at the banks
 
 <div v-scope>
-    <div v-if="banks.length < 1">
-        <div class="add-bank bg-btn"></div>
-        <span>Click to add bank</span>
-    </div> 
-    <div v-else>
+    <div v-if="banks.length < 1" class="no-banks">
+        <div class="add-bank bg-btn" @click="addBank"></div>
+        <span class="instruction">Click to add bank</span>
+    </div>
+    <div v-else class="banks">
         <div class="bank" v-for="(bank,i) in banks" :key="i">
             <span @click="removeBank(i)" class="db pointer underline-hover o-0 remove">x</span>
         </div>
         <span @click="addBank" class="mt3 underline-hover dib pointer add">Add Bank</span>
+    </div>
+    <div class="add-bank-form">
+        <form>
+            <input v-model="latestBank.name" class="input"></input>
+        </form>
     </div>
 </div>
 
