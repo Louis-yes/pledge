@@ -36,6 +36,9 @@ function thePledge(el){
             { name: "Carbon Credits", votes: 0, passed: false },
             { name: "Mandatory Targets", votes: 0, passed: false }
         ],
+        get latestBank() {
+            return this.banks[this.banks.length - 1]
+        },
         /** 
          * The score functions apply all the scoring rules for each round
          * 

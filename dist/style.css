@@ -21,13 +21,12 @@
 
     --font: Newsreader;
     --color: #222;
-    --p: 3.5rem;
-    --pp: 2.4rem;
-    --ppp: 2rem;
+    --p: 2.5rem;
+    --pp: 2rem;
+    --ppp: 1.9rem;
     --heavy: 500;
     --medium: 400;
     --light: 300;
-
 }
 
 *:focus, *:active {
@@ -141,6 +140,31 @@ body {
     background-color: var(--green-hl);
 }
 
+.add-bank-form {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-color: rgba(0,0,0,.4);
+}
+
+.add-bank-form form {
+    width: 30%;
+    padding: 10px;
+    text-align: center;
+    border: solid 1px black;
+}
+
+.add-bank-form input {
+    width: 100%;
+}
+
+
+
 .bank .name{
     border: none;
     outline: none;
@@ -198,8 +222,8 @@ body {
 
 .tooltip {
     display: none;
-    width: 650px;
-    padding: 68px;
+    width: 550px;
+    padding: 40px;
     background-color: #fff;
     border-radius: 50px;
 
