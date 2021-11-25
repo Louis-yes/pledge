@@ -18,10 +18,18 @@
     --green-hl: #88C673;
     --orange: #f2a663;
     --orange-light: #f4da6c;
+    --blue: #3C3F9B;
+    --blue-light: #90CDED;
+    --red: #C52B37;
+    --red-light: #EDA4C2;
+
+    --black: #181924;
+    --grey: #A8B0B3;
+    --white: #ffffff;
 
     --font: Newsreader;
     --color: #222;
-    --p: 2.5rem;
+    --p: 2.3rem;
     --pp: 2rem;
     --ppp: 1.9rem;
     --heavy: 500;
@@ -34,11 +42,15 @@
 }
 
 body { 
-    background-color: var(--bg);
+    background: var(--bg);
+    /* background-repeat: repeat; */
+    background-size: fit;
     font-size: 16px;
+    line-height: 1.5;
+}
+* {
     box-sizing: border-box;
 }
-
 
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -56,7 +68,7 @@ body {
 }
 
 .pressie-nav .next svg {
-    width: 44px; height: 44px; fill: #fff; pointer-events: none;
+    width: 44px; height: 44px; fill: var(--white); pointer-events: none;
 } 
 
 .pressie-nav .previous { display: none; }
@@ -77,7 +89,8 @@ body {
     font-family: var(--font); font-size: 1.5em; color: var(--color);
     font-size: var(--p);
 }
-.slide.active{ display: flex; }
+.slide.visible{ display: flex; }
+.slide article { width: 100%; }
 
 .slide h1,
 .slide h2,
@@ -112,7 +125,78 @@ body {
     font-weight: 600;
 }
 
+/* Bonus  */
 
+.dollar svg {
+    position: relative;
+    top: 24px;
+    width: 56px;
+}
+
+.first-decision article {
+    display: flex;
+    align-items: center;
+}
+
+.explain-consequences article {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    font-size: var(--p);
+}
+
+
+
+.investment-decision ul {
+    padding-left: 200px;
+    list-style: none;
+}
+
+.investment-decision li {
+    position: relative;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+.investment-decision svg {
+    position: absolute;
+    left: -80px;
+    top: 5px;
+}
+
+.investment-decision li:first-of-type svg {
+    fill: var(--orange);
+}
+
+.investment-decision li:nth-of-type(2) svg {
+    fill: var(--green-hl);
+}
+
+.net-zero-options ul {
+    padding-left: 100px;
+}
+
+.raise { 
+    fill: var(--blue-light); 
+    color: var(--blue-light); 
+}
+.stick { 
+    fill: var(--blue); 
+    color: var(--blue); 
+}
+
+.raise svg, 
+.stick svg {
+    top: 10px;
+    width: 34px;
+    position: relative;
+}
+
+
+.raise svg { transform: rotate(-90deg); }
+.stick svg { transform: rotate(90deg); }
 /**********************************************************************************************/
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -129,83 +213,237 @@ body {
     align-items: center; 
     display: flex;
     justify-content: center;
-
 }
 .bg-btn:hover { transform: translateY(-3px); }
+.bg-btn svg { width: 100%; }
 
+/* Countdown */
+.countdown {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.countdown .time-string {
+    margin: 21px 0 0 34px;
+    font-size: 5rem;
+}
+.countdown .bg-btn {
+    background-color: var(--orange);
+}
 
 /* Bank Designs */
+.bank-intro-screen {
+    
+}
+
+.no-banks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 300px;
+}
+
+.no-banks .instruction {
+    font-size: var(--pp);
+    font-style: italic;
+    margin-bottom: 50px;
+}
 
 .add-bank {
     background-color: var(--green-hl);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    font-size: 90px;
+    font-weight: 900;
 }
 
-.add-bank-form {
+.remove {
+    position: absolute;
+    top: 30px; right: 30px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.remove svg {
+    fill: var(--grey);
+    width: 23px; height: 23px;
+}
+
+.add-bank-form, .bank-commitment-form{
     position: absolute;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
     
     display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     
     background-color: rgba(0,0,0,.4);
 }
 
-.add-bank-form form {
+.add-bank-form.visible,
+.bank-commitment-form.visible { display: flex; }
+
+.add-bank-form form,
+.bank-commitment-form form {
     width: 30%;
-    padding: 10px;
+    background-color: var(--white);
+    padding: 50px;
     text-align: center;
-    border: solid 1px black;
+    border-radius: 50px;
 }
 
 .add-bank-form input {
+    margin: 20px 0;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    border: solid 3px var(--grey);
+}
+
+.add-bank-form .bank-ok {
+    margin:10px auto;
+    background-color: var(--green-hl);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fill: var(--white);
+}
+
+.add-bank-form .bank-ok svg {
+    width: 46px;
+    height: 35px;
+}
+
+.banks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.banks .bank {
+    position: relative;
+    margin: 20px;
+    width: 25%; height: 100%;
+    padding: 30px;
+
+    border-radius: 50px;
+    background-color: var(--white);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+
+    text-align: center;
+}
+
+.bank .avatar {
+    height: 100px;
+    width: 100px;
+    padding-top: 30px;
+    display: inline-block;
+}
+
+.bank .avatar svg {
+    width: 60px;
+}
+
+.banks .bank .token-count .token-text {
+    display: block;
+    color: var(--green);
+}
+.banks .bank .token-count .token {
+    font-size: 5rem;
+    height: 5px;
+    display: inline-block;
+}
+
+/* Commitments */
+.commitments {
+    display: flex;
+    justify-content: space-around;
+}
+
+.commitments .bank {
+    text-align: center;
+}
+
+.commitment {
+    margin: 0 auto;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 3rem;
+    transition: transform .1s ease-in-out;
+    cursor: pointer;
+}
+
+.commitment.UNDECIDED:hover {
+    transform: translateY(-3px);
+}
+
+.commitment.UNDECIDED svg {
+    fill: var(--green-hl);
     width: 100%;
 }
 
+.bank-commitment-form .options .stick,
+.bank-commitment-form .options .raise {
+    cursor: pointer;
+}
 
+/* Scoreboard */
 
-.bank .name{
-    border: none;
-    outline: none;
-    color: white;
+.scoreboard, .scoreboard table {
+    width: 100%;
+    border-collapse: collapse; 
+}
 
+.scoreboard td,
+.scoreboard th {
+    padding: 20px;
+
+    font-weight: normal;
+    text-align: center;
+}
+
+.scoreboard td {
     font-weight: bold;
-    display: inline-block;
-    width: auto;
 }
 
-.bank:hover .remove {
-    opacity: 1;
+.scoreboard td:first-child {
+    text-align: right;
+    width: 300px;
 }
 
-.bank input[type="radio"],
-.bank input[type="checkbox"]{
-    opacity: 0;
-    width: 0;
+.scoreboard tr {
+    border-bottom: solid 3px var(--blue-light);
+    border-bottom-style: dotted;
+}
+.scoreboard tr:last-child,
+.scoreboard tr:first-child {
+    border-bottom: none;
 }
 
-.bank input[type="radio"]:checked + label,
-.bank input[type="checkbox"]:checked + label {
-    color: red;
+.scoreboard tr:nth-child(2),
+.scoreboard tr:nth-last-child(2) {
+    border-bottom: solid 3px var(--blue-light);
 }
 
-.bank form:focus-within {
-   outline: 1px solid #fff;
+/* Commitment Graph */
+.commitments-review {
+    width: 100%;
+    position: relative;
 }
 
-.passed {
-    color: red;
-}
 
-.--transition-fade {
-    opacity: 1;
-    transition:opacity .3s cubic-bezier(0.455, 0.03, 0.515, 0.955);
-}
-
-.--transition-fade.before-leave, .--transition-fade.before-enter {
-    opacity: 0;
-}
 
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -218,13 +456,14 @@ body {
 [data-tooltip] {
     background-color: var(--orange-light);
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .tooltip {
     display: none;
     width: 550px;
     padding: 40px;
-    background-color: #fff;
+    background-color: var(--white);
     border-radius: 50px;
 
     text-align: center;
@@ -254,3 +493,7 @@ body {
 
 .tooltip.active,
 .tooltip-backdrop.active { display: block; }
+
+.active-tooltip {
+    z-index: 999;
+}

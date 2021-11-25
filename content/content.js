@@ -1,52 +1,64 @@
 const deckContent = `
 <!-- This is where the slide deck starts! treat it like markdown, but you can also include html and vue-petite components :) -->
 
-<!-- name=title-page -->
+<slide class="landing-page" />
 
-# Welcome to The Pledge.
-
----
-
-This is a game about the transition to net zero.
- 
-You'll be playing in teams. Each team is a different bank.
+# The Pledge.
 
 ---
 
-## Your objectives:
+# Welcome to **The Pledge.**
+This is a game about the transition to <span data-tooltip="#net-zero">net zero.</span>  
+*(When you see highlighted text, click for an explanation.)*  
+  
+You’ll be playing in teams. Each team is a different bank.  
+  
+<span class="next-prompt">When you're ready, click this arrow to proceed</span>
 
-- To be a profitable, successful bank
-- To take care of the planet
+<div id="net-zero" class="tooltip">
+The state of carbon neutrality,
+where all carbon emissions are balanced by removal. 
 
-You'll have to balance these long term and short term priorities.
-
+*Click anywhere to close this message.*
+</div>
 ---
 
-## Tokens
+<!-- Bank introduction screen -->
+<slide class="bank-intro-screen" v-scope />
 
----
+### Lets look at the banks
 
-Each bank has 6 tokens. This represents your rate of Return on Equity and your bank's market position. 
-
----
-
-If your tokens drop to zero, that means you're no longer competitive. 
-
----
-
-## SECOND CURRENCY
-
----
-
-Each player has a bonus.
-
-This is not for your bank, this is just for you. 
-
-It represents your salary bonus and your chance of promotion.
-
----
-
-## ROUNDS
+<div v-if="banks.length < 1" class="no-banks">
+    <span class="instruction">Click to add bank.</span>
+    <div class="add-bank bg-btn" @click="showNewBankEditor">+</div>
+</div>
+<div v-else class="banks">
+    <div class="bank" v-for="(bank,i) in banks" :key="i">
+        <div class="avatar"><bank></div>
+        <p> {{bank.name}} <p>
+        <span class="token-count">
+            <span v-if="bank.tokens > 0" class="positive">
+                <span class="token-text">
+                {{bank.tokens}} {{ banks.tokens > 1 ? 'token' : 'tokens' }}  </span>
+                <span v-for="t in bank.tokens" :key="t" class="token">.</span>
+            </span>
+            <span v-else class="negative token-text">
+                {{bank.tokens}}
+            </span>
+        </span>
+        <span @click="removeBank(i)" class="remove">
+            <cross>
+        </span>
+    </div>
+    <div class="add-bank bg-btn" @click="showNewBankEditor">+</div>
+</div>
+<div class="add-bank-form" :class="newBankEditor ? 'visible' : ''" v-on:click.self="dismissNewBankEditor()">
+    <form v-on:submit.prevent="hideNewBankEditor">
+        <label for="bankname">What's your animal?</label>
+        <input id="bankname" v-model="templateBank.name" placeholder="" class="input"></input>
+        <div class="bank-ok bg-btn" @click="confirmNewBankEditor"><tick></div>
+    </form>
+</div>
 
 ---
 
@@ -702,6 +714,6 @@ Thank you for playing *The Pledge*
 
 <!-- This is where the slide deck ends! Don't edit further than here unless you know what you're doing! -->
 `
-function deck(){
+export default function deck(){
     return deckContent
 }

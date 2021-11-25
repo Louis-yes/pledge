@@ -507,6 +507,10 @@ Thank you for playing *The Pledge*
 
 <!-- This is where the slide deck ends! Don't edit further than here unless you know what you're doing! -->
 `
-export default function deck(){
+// export default function deck(){
+//     return deckContent
+// }
+
+window.deck = function deck() {
     return deckContent
 }

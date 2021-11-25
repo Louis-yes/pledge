@@ -65,20 +65,20 @@ export default function pressie(md, opts){
     function makeSlides (){
         const rx_pressie = /<pressie v-scope>/
         const rx_slide = /<slide .+>/
-        
+        const rx_class = /class\=\"\S+\"/
         return md.split('---').map((ss,i) => {
             const slideTag = ss.match(rx_slide)
-            let additionalAttrs = ""
             let addclass = ""
+            let additionalAttrs = ""
             if(slideTag){
-                let attrs = slideTag[0].matchAll(/([\w\-]+)\=\"([\w\s]+)\"/g)
-                if(attrs){
-                    let aaa = Array.from(attrs)
-                    aaa.forEach(aa => { if(aa[1] == "class"){ addclass = aa[2] } })
-                    additionalAttrs = aaa.map(aa => { return aa[1] != "class" ? `${aa[1]}="${aa[2]}"`: "" }).join(" ")
-                }
+                let st = slideTag[0]
+                let clss = st.match(rx_class)
+                if (clss) { addclass = clss[0].split("\"")[1] }
+                console.log(st)
+                additionalAttrs = st.replace('<slide','').replace('/>','').replace(rx_class,'')
                 ss = ss.replace(rx_slide, '')
             }
+            console.log(additionalAttrs)
             return `
                 <section class="${classes.slide} ${classes.index}${i} ${i == state.currentSlide ? classes.active: ''} ${addclass}" ${additionalAttrs}>
                     <article>${marked.parse(ss)}</article>
