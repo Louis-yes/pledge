@@ -28,13 +28,13 @@
 *************************************************************/
 import { marked } from "marked"
 
-export default function pressie(md, opts){
+export default function pressie(md, oo){
     const state = {
         currentSlide : Number(window.location.hash.replace("#",'')) || 0,
         length : md.split('---').length - 1,
-        nav: ""
+        nav: {}
     }
-
+    const opts = oo || {}
     const classes = {
         beforeLeave: "before-leave",
         beforeEnter: "before-enter",
@@ -50,7 +50,13 @@ export default function pressie(md, opts){
 
     keyboardEvents()
 
-    return state.slides
+    return {
+        slides: state.slides,
+        state: state,
+        controls: {
+            nextSlide: nextSlide
+        }
+    }
     
     /**
      * Takes an md file and splits it by "---"
@@ -74,16 +80,18 @@ export default function pressie(md, opts){
                 let st = slideTag[0]
                 let clss = st.match(rx_class)
                 if (clss) { addclass = clss[0].split("\"")[1] }
-                console.log(st)
                 additionalAttrs = st.replace('<slide','').replace('/>','').replace(rx_class,'')
                 ss = ss.replace(rx_slide, '')
             }
-            console.log(additionalAttrs)
-            return `
+            if(opts.slideTemplate){
+                return opts.slideTemplate(marked.parse(ss), i, `${classes.slide} ${classes.index}${i} ${i == state.currentSlide ? classes.active: ''} ${addclass}`, additionalAttrs)
+            } else {
+                return `
                 <section class="${classes.slide} ${classes.index}${i} ${i == state.currentSlide ? classes.active: ''} ${addclass}" ${additionalAttrs}>
                     <article>${marked.parse(ss)}</article>
                 </section>`
-            })
+            }
+        })
     }
 
     /**
@@ -92,18 +100,17 @@ export default function pressie(md, opts){
      * and stop <input> keyboard interactions from triggering event listeners
      */
     function makeNavElement(){
-        const nav = document.createElement('div')
-        nav.innerHTML = `
-            <a class="next bg-btn" data-pressie="next">
-                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <path d="M22.956,0.344l20.451,20.45c0.457,0.458,0.457,1.2,0,1.657L22.956,42.902c-0.457,0.457-1.199,0.457-1.657,0
-                        l-1.934-1.934c-0.457-0.458-0.457-1.2,0-1.657l15.149-15.149H1.172C0.524,24.162,0,23.637,0,22.99v-2.734
-                        c0-0.647,0.524-1.172,1.172-1.172h33.343L19.365,3.935c-0.457-0.458-0.457-1.2,0-1.657l1.934-1.934
-                        C21.757-0.114,22.499-0.114,22.956,0.344z"/>
-                    </svg>
-            </a>
-            <a class="previous" data-pressie="previous"> previous </a> 
-        `
+        const nav = opts.nav
+        if(!nav){
+            const nav = document.createElement('div')
+            nav.innerHTML = `
+                <a class="next bg-btn" data-pressie="next">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a class="previous" data-pressie="previous"> previous </a> 
+            `
+        }
+        document.body.appendChild(nav)
         nav.className = "pressie-nav"
         nav.tabIndex = "0"
         nav.addEventListener("click", (e)=>{
@@ -111,7 +118,6 @@ export default function pressie(md, opts){
             if(e.target.dataset.pressie == "previous"){ setSlide(state.currentSlide - 1) }
         })
 
-        document.body.appendChild(nav)
         return nav
     }
 
@@ -128,7 +134,7 @@ export default function pressie(md, opts){
         // create event to use
         const event = new CustomEvent('pressie-slide-change', {
             bubbles: true,
-            detail: { previous: currentSlide, next: newSlide }
+            detail: { previous: state.currentSlide, next: i }
         });
 
         state.currentSlide = i
@@ -138,10 +144,15 @@ export default function pressie(md, opts){
         state.nav.dispatchEvent(event)
     }
 
+    function nextSlide(){
+        setSlide(state.currentSlide + 1)
+    }
+
     /**
      * initialises the keyboard event listeners
      */
     function keyboardEvents(){
+        // if keyboard events
         window.addEventListener('keydown', (e)=>{
             if(document.activeElement === document.body || document.activeElement === state.nav) {
                 if(e.code == "ArrowLeft"){

@@ -12,6 +12,7 @@
 
 /* Universal styles */
 :root {
+    font-size: 9pt;
     --bg: #f7f7f6;
 
     --green: #3D8169;
@@ -35,6 +36,14 @@
     --heavy: 500;
     --medium: 400;
     --light: 300;
+
+    --icon: 3rem;
+}
+
+@media screen and (min-height: 629px) {
+    :root {
+        font-size: 12pt;
+    }
 }
 
 *:focus, *:active {
@@ -46,7 +55,7 @@ body {
     /* background-repeat: repeat; */
     background-size: fit;
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1;
 }
 * {
     box-sizing: border-box;
@@ -60,11 +69,23 @@ body {
 
 .pressie-nav {
     position: fixed; bottom: 50px; right: 50px; 
+    display: flex;
+    align-items: center;
 }
+
+.pressie-nav .text {
+    opacity: .6;
+    font-weight: 300;
+    /* font-style: italic; */
+    margin: 0 20px 0 0;
+    text-align: left;
+}
+
 
 .pressie-nav .next { 
     background-color: var(--green);
-    font-size: 0;
+    font-size: 1.4em;
+    color: var(--white);
 }
 
 .pressie-nav .next svg {
@@ -73,6 +94,9 @@ body {
 
 .pressie-nav .previous { display: none; }
 
+.pressie-nav.disabled .next {
+    background-color: var(--grey);
+}
 
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -81,10 +105,9 @@ body {
 /* Slide deck styles */
 
 .slide {
-    display: none;
     width: 100vw; height: 100vh;
 
-    padding: 86px;
+    padding: 4rem;
 
     font-family: var(--font); font-size: 1.5em; color: var(--color);
     font-size: var(--p);
@@ -147,8 +170,6 @@ body {
     font-size: var(--p);
 }
 
-
-
 .investment-decision ul {
     padding-left: 200px;
     list-style: none;
@@ -158,6 +179,12 @@ body {
     position: relative;
     line-height: 1.5;
     margin-bottom: 30px;
+}
+
+.investment-decision ul i {
+    position: absolute;
+    left: -48px;
+    top: 6px;
 }
 
 .investment-decision svg {
@@ -205,7 +232,7 @@ body {
 
 
 /* Generic */
-.bg-btn {
+.btn {
     border-radius: 50%;
     width: 118px; height: 118px;
     cursor: pointer;
@@ -214,9 +241,13 @@ body {
     display: flex;
     justify-content: center;
 }
-.bg-btn:hover { transform: translateY(-3px); }
-.bg-btn svg { width: 100%; }
+.btn:hover { transform: translateY(-3px); }
+.btn svg { width: 100%; }
+.white { color: var(--white) }
 
+.bg-red {background-color: var(--red);}
+.bg-green { background-color: var(--green-hl); }
+.bg-orange { background-color: var(--orange);}
 /* Countdown */
 .countdown {
     width: 100%;
@@ -246,13 +277,17 @@ body {
     height: 300px;
 }
 
+.add-bank {
+    flex-shrink: 0;
+}
+
 .no-banks .instruction {
     font-size: var(--pp);
     font-style: italic;
     margin-bottom: 50px;
 }
 
-.add-bank {
+.bank-action {
     background-color: var(--green-hl);
     flex-shrink: 0;
     display: flex;
@@ -275,32 +310,29 @@ body {
     width: 23px; height: 23px;
 }
 
-.add-bank-form, .bank-commitment-form{
+.bank-action-form{
     position: absolute;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
     
     display: flex;
-    display: none;
     justify-content: center;
     align-items: center;
     
     background-color: rgba(0,0,0,.4);
 }
 
-.add-bank-form.visible,
-.bank-commitment-form.visible { display: flex; }
+.bank-action-form form {
+    width: 500px;
+    height: 600px;
 
-.add-bank-form form,
-.bank-commitment-form form {
-    width: 30%;
     background-color: var(--white);
-    padding: 50px;
+    padding: 80px;
     text-align: center;
     border-radius: 50px;
 }
 
-.add-bank-form input {
+.bank-action-form input {
     margin: 20px 0;
     padding: 10px;
     width: 100%;
@@ -308,7 +340,7 @@ body {
     border: solid 3px var(--grey);
 }
 
-.add-bank-form .bank-ok {
+.bank-action-form .bank-ok {
     margin:10px auto;
     background-color: var(--green-hl);
     display: flex;
@@ -317,7 +349,7 @@ body {
     fill: var(--white);
 }
 
-.add-bank-form .bank-ok svg {
+.bank-action-form .bank-ok svg {
     width: 46px;
     height: 35px;
 }
@@ -361,41 +393,89 @@ body {
     display: inline-block;
 }
 
-/* Commitments */
-.commitments {
+/* Bank interaction modules */
+.actions {
     display: flex;
     justify-content: space-around;
 }
 
-.commitments .bank {
+.actions .bank {
     text-align: center;
 }
 
 .commitment {
     margin: 0 auto;
-    width: 80px;
-    height: 80px;
+    /* width: 100px; */
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     border-radius: 50%;
-    font-size: 3rem;
+    font-size: 6rem;
     transition: transform .1s ease-in-out;
-    cursor: pointer;
 }
 
-.commitment.UNDECIDED:hover {
-    transform: translateY(-3px);
+.undecided { font-size: var(--icon); cursor: pointer; }
+.undecided:hover { transform: translateY(-3px); }
+
+.actions .bank {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 23rem; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*
+        width: 290px;
+    */
 }
 
-.commitment.UNDECIDED svg {
-    fill: var(--green-hl);
+
+
+.actions .bank ul {
+    list-style: none;
+    padding: 0;
+}
+
+.bank-action-form .options {
+    display: flex;
+    margin: 65px 0;
     width: 100%;
+    justify-content: space-around;
 }
 
-.bank-commitment-form .options .stick,
-.bank-commitment-form .options .raise {
+.bank-action-form .options .stick,
+.bank-action-form .options .raise { cursor: pointer; }
+
+.bank-action-form .options .stick:hover .btn,
+.bank-action-form .options .raise:hover .btn { transform: translateY(-3px); }
+.bank-action-form .label { display: block; }
+
+.bank-action-form .btn {
+    transition: transform .1s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    color: var(--white);
+    font-size: var(--icon);
+}
+
+.raise .btn  {
+    background-color: var(--blue-light);
+}
+
+.stick .btn {
+    background-color: var(--blue);
+}
+
+.regulation-votes .vote {
+    padding: 10px 5px;
+    margin: 10px;
+    border: 1px solid #000;
+    border-radius: 10px;
     cursor: pointer;
 }
 
@@ -443,7 +523,12 @@ body {
     position: relative;
 }
 
-
+.news-update {
+    background-color: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    padding: 100px;
+}
 
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -453,14 +538,18 @@ body {
 /* Tooltips */
 /* --------- */
 
-[data-tooltip] {
+.tooltip-for, 
+.clone {
     background-color: var(--orange-light);
     cursor: pointer;
     white-space: nowrap;
 }
-
-.tooltip {
-    display: none;
+.clone {  
+    display: table-cell;
+    position: absolute;
+    line-height: 1;
+}
+.tooltip.content {
     width: 550px;
     padding: 40px;
     background-color: var(--white);
@@ -480,8 +569,7 @@ body {
 
 .tooltip p { margin: 0; }
 
-.tooltip-backdrop {
-    display: none;
+.tooltip.backdrop {
     position: absolute;
     top: 0;
     left: 0;
@@ -491,9 +579,18 @@ body {
     background: rgba(0,0,0,.6);
 }
 
-.tooltip.active,
-.tooltip-backdrop.active { display: block; }
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+    transition: all 0.1s ease-out;
+}
+  
+.slide-fade-leave-active {
+    transition: all 0.1s cubic-bezier(1, 0.5, 0.8, 1);
+}
 
-.active-tooltip {
-    z-index: 999;
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    /* transform: translateX(20px); */
+    opacity: 0;
 }

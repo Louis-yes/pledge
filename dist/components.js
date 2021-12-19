@@ -8,19 +8,19 @@ const deckContent = `
 ---
 
 # Welcome to **The Pledge.**
-This is a game about the transition to <span data-tooltip="#net-zero">net zero.</span>  
+This is a game about the transition to <tooltip-for el="#net-zero">net-zero.</tooltip-for> 
 *(When you see highlighted text, click for an explanation.)*  
   
 You’ll be playing in teams. Each team is a different bank.  
   
-<span class="next-prompt">When you're ready, click this arrow to proceed</span>
+<next>When you're ready, click this arrow to proceed</next>
 
-<div id="net-zero" class="tooltip">
+<tooltip id="net-zero">
 The state of carbon neutrality,
 where all carbon emissions are balanced by removal. 
 
 *Click anywhere to close this message.*
-</div>
+</tooltip>
 
 ---
 
@@ -30,58 +30,23 @@ You’ll now meet your team in a breakout room for 3 minutes.
 
 *With your team, decide what animal your bank is named after.*
 
-<div v-scope="Countdown({ duration: 180 })" @mounted="mounted" class="countdown">
-    <div class="bg-btn" v-if="!running" @click="start"><play></div>
-    <div class="bg-btn" v-else @click="reset"><reset></div>
-    <p class="time-string">{{ timeString }}</p>
-</div> 
+<countdown duration="180"></countdown>
 
-<span class="next-prompt">When you’re back together, proceed.</span>
+<next>When you’re back together, proceed.</next>
 
 ---
 
-<!-- Bank introduction screen -->
-<slide class="bank-intro-screen" v-scope="pledge" />
+<slide class="bank-intro-screen" />
 
 ### Lets look at the banks
 
-<div v-if="banks.length < 1" class="no-banks">
-    <span class="instruction">Click to add bank.</span>
-    <div class="add-bank bg-btn" @click="showNewBankEditor">+</div>
-</div>
-<div v-else class="banks">
-    <div class="bank" v-for="(bank,i) in banks" :key="i">
-        <div class="avatar"><bank></div>
-        <p> {{bank.name}} <p>
-        <span class="token-count">
-            <span v-if="bank.tokens > 0" class="positive">
-                <span class="token-text">
-                {{bank.tokens}} {{ banks.tokens > 1 ? 'token' : 'tokens' }}  </span>
-                <span v-for="t in bank.tokens" :key="t" class="token">.</span>
-            </span>
-            <span v-else class="negative token-text">
-                {{bank.tokens}}
-            </span>
-        </span>
-        <span @click="removeBank(i)" class="remove">
-            <cross>
-        </span>
-    </div>
-    <div class="add-bank bg-btn" @click="showNewBankEditor">+</div>
-</div>
-<div class="add-bank-form" :class="newBankEditor ? 'visible' : ''" v-on:click.self="dismissNewBankEditor()">
-    <form v-on:submit.prevent="hideNewBankEditor">
-        <label for="bankname">What's your animal?</label>
-        <input id="bankname" v-model="templateBank.name" placeholder="" class="input"></input>
-        <div class="bank-ok bg-btn" @click="confirmNewBankEditor"><tick></div>
-    </form>
-</div>
+<bankintro :banks="banks" v-on:add-bank="addBank" v-on:remove-bank="removeBank"></bankintro>
 
 ---
 
 # So how do we play?
 
-<span class="next-prompt">When you're ready, proceed.</span>
+<next>When you're ready, proceed.</next>
 
 ---
 
@@ -95,7 +60,7 @@ You'll have to balance these long term and short term priorities.
 
 At the end, we'll judge your success by looking at your career trajectory, the wealth of your bank and the state of the planet.
 
-<span class="next-prompt">When you're ready, proceed.</span>
+<next>When you're ready, proceed.</next>
 
 ---
 
@@ -108,21 +73,7 @@ bank's market position.
 
 If your tokens drop to zero, that means you're no longer competitive. The sharks are circling and customers are deserting in droves.
 
-<span class="next-prompt">When you're ready, proceed.</span>
-
----
-
-# Bonus
-
-Each player starts with a bonus: <span class="dollar"><dollar></span>
-
-This is not for your bank, this is just for you.
-
-It represents your salary bonus and your chance of promotion.
-
-During the game, you might lose or increase your bonus. Keep track of your own bonus.
-
-<span class="next-prompt">When you're ready, proceed.</span>
+<next>When you're ready, proceed.</next>
 
 ---
 
@@ -130,64 +81,7 @@ During the game, you might lose or increase your bonus. Keep track of your own b
 
 It's time to make your first decision as a bank
 
-<span class="next-prompt">I'm excited!</span>
-
----
-
-<slide class="investment-decision" />
-
-# Investment Decision: <br> New Green Tech
-
-You have the opportunity to invest in two different companies.
-
-- <building> **Concredible** – a building materials company making concrete that sequesters atmospheric carbon as it hardens
-- <plant> **Behemoss** – a biohacking agritech startup attempting to capture carbon in the atmosphere via genetically modified edible moss
-
-<span class="next-prompt">Proceed</span>
-
----
-
-<!-- Points round up 1 -->
-<div v-scope="pledge" class="scoreboard">
-    <table>
-        <tr>
-            <th></th>
-            <th v-for="(b,i) in banks" :key="i">
-                {{b.name}} Bank
-            </th>
-        </tr>
-        <tr>
-            <td>Starting Position</td>
-            <td v-for="(b,i) in initialScore.banks" :key="i">{{b.tokens}}</td>
-        </tr>
-        <tr class="">
-            <td>Round 1</td>
-            <td v-for="(b,i) in roundOneScore.banks" :key="i"></td>
-        </tr>
-        <tr class="">
-            <td>???</td>
-            <td v-for="(b,i) in banks" :key="i"></td>
-        </tr>
-        <tr>
-            <td>Round 2</td>
-            <td v-for="(b,i) in roundTwoScore.banks" :key="i"></td>
-        </tr>
-        <tr class="">
-            <td>???</td>
-            <td v-for="(b,i) in banks" :key="i"></td>
-        </tr>
-        <tr>
-            <td>Round 3</td>
-            <td v-for="(b,i) in roundThreeScore.banks" :key="i"></td>
-        </tr>
-        <tr>
-            <td>Final Score</td>
-            <td v-for="(b,i) in finalScore.banks" :key="i"></td>
-        </tr>
-    </table>
-</div>
-
-<span class="next-prompt">When you're ready, proceed.</span>
+<next>I'm excited!</next>
 
 ---
 
@@ -201,7 +95,7 @@ You'll decide whether your bank is going to <span class="raise">raise <arrow></s
 
 To announce your commitment, one person from each bank will hold their arrow up to the camera pointing <span class="raise">up</span> or <span class="stick">down</span>. We'll do that simultaneously.
 
-<span class="next-prompt">Once you've read these instructions, proceed.</span>
+<next>Once you've read these instructions, proceed.</next>
 
 <div id="public-commitment" class="tooltip">
 
@@ -241,7 +135,7 @@ So there's a strong <span data-tooltip="#first-mover">first mover disadvantage.<
     first mover
 </div>
 
-<span class="next-prompt">When you're ready, proceed.</span>
+<next>When you're ready, proceed.</next>
 
 
 ---
@@ -253,7 +147,7 @@ Your banks are under pressure to make a net zero commitment. You need to make a 
 How ambitious will your commitment be?
 
 
-<span class="next-prompt">Proceed</span>
+<next>Proceed</next>
 
 ---
 
@@ -270,7 +164,7 @@ sectors, even the ones you can't yet measure the impact of.
 
 - Or you can <span class="stick">stick</span> to your current commitments which focus only on high carbon sectors to begin with.
 
-<span class="next-prompt">When you're ready, proceed.</span>
+<next>When you're ready, proceed.</next>
 
 ---
 
@@ -285,7 +179,7 @@ In just a moment, you’ll meet with your team to make decisions:
 
 - Decide whether to <span class="raise">raise</span> your commitment or <span class="stick">stick.</stick>
 
-<span class="next-prompt">Proceed</span>
+<next>Proceed</next>
 
 ---
 
@@ -296,13 +190,9 @@ addition to anything that happens with the other banks.
 
 *In your breakout room, decide whether to stick or raise. You have 5 minutes.*
 
-<div v-scope="Countdown({ duration: 10 })" @mounted="mounted" class="countdown">
-    <div class="bg-btn" v-if="!running" @click="start"><play></div>
-    <div class="bg-btn" v-else @click="reset"><reset></div>
-    <p class="time-string">{{ timeString }}</p>
-</div> 
+<countdown duration="300">
 
-<span class="next-prompt">When you’re back from your breakout rooms, proceed.</span>
+<next>When you’re back from your breakout rooms, proceed.</next>
 
 ---
 
@@ -313,193 +203,364 @@ One player from each bank will make the announcement.
 *Announcers, please identify yourselves and prepare your arrow.*  
 *On the count of three, simultaneously reveal your arrow pointing up or down.*
 
-<span class="next-prompt">When all banks have revealed their decision, proceed</span>
+<next>When all banks have revealed their decision, proceed</next>
 
 ---
 <slide class="commitments-screen"/>
 
 # Results
 *Click the question marks to record each bank’s decision.*
+<next :disabled="score.commitments[0] == 'UNDECIDED'" >When all bank decisions have been recorded, proceed.</next>
 
-<span class="next-prompt">When all bank decisions have been recorded, proceed.</span>
-
-<div v-scope="pledge" class="commitments" >
-    <div class="bank" v-for="(bank,i) in banks" :key="i">
-        <div :class="['commitment', bank.commitments[0]]">
-            <div v-if="bank.commitments[0] == 'RAISE'" class="raise">
-                    <arrow>
-            </div>
-            <div v-if="bank.commitments[0] == 'STICK'" class="stick">
-                    <arrow>
-            </div>
-            <div v-if="bank.commitments[0] == 'UNDECIDED'" class="undecided" @click="showCommitmentsPopup(0,i)">
-                    <question>
-            </div>
-        </div>
-        <div class="avatar"><bank></div>
-        <p> {{bank.name}} Bank<p>
-    </div>
-    <div class="bank-commitment-form bank-commitment-form-0" :class="commitmentsForm ? 'visible':''" @click.self="dismissCommitmentsPopup(0)">
-            <form class="inner-content">
-                What did {{banks[selectedBank].name}} Bank do?
-                <div class="options">
-                    <div class="stick" @click="setAsStick(0, banks[selectedBank])"> stick <span class="btn-little"><arrow></span></div>
-                    <div class="raise" @click="setAsRaise(0, banks[selectedBank])"> raise <span class="btn-little"><arrow></span></div>
-                </div>
-            </form>
-    </div>
-</div>
-
+<commitments :banks="banks" :round="0" v-on:commit="setCommitment" :score="score">
 
 ---
 
-<!-- Bank commitments screen -->
+# Lets look at the scores
 
 ---
 
-<!-- Points round up 1 -->
-<div v-scope="pledge" class="scoreboard">
-    <table>
-        <tr>
-            <th></th>
-            <th v-for="(b,i) in banks" :key="i">
-                {{b.name}} Bank
-            </th>
-        </tr>
-        <tr>
-            <td>Initial Score</td>
-            <td v-for="(b,i) in initialScore.banks" :key="i">{{b.tokens}}</td>
-        </tr>
-        <tr class="active">
-            <td>Round 1</td>
-            <td v-for="(b,i) in roundOneScore.banks" :key="i">{{b.tokens}}</td>
-        </tr>
-        <tr class="">
-            <td>Interstitial A</td>
-            <td v-for="(b,i) in banks" :key="i"></td>
-        </tr>
-        <tr>
-            <td>Round 2</td>
-            <td v-for="(b,i) in roundTwoScore.banks" :key="i"></td>
-        </tr>
-        <tr class="">
-            <td>Interstitial B</td>
-            <td v-for="(b,i) in banks" :key="i"></td>
-        </tr>
-        <tr>
-            <td>Round 3</td>
-            <td v-for="(b,i) in roundThreeScore.banks" :key="i"></td>
-        </tr>
-        <tr>
-            <td>Final Score</td>
-            <td v-for="(b,i) in finalScore.banks" :key="i"></td>
-        </tr>
-    </table>
-</div>
-
-<span class="next-prompt">When you're ready, proceed.</span>
+<scoreboard :score="score" rounds="['Round 1']" :banks="banks" />
 
 ---
 
-<!-- lobby votes -->
-<div v-scope="pledge">
-    <h1>Lobbying</h1>
-    <div class="bank"  v-for="(bank,i) in banks" :key="i">
-        <h2>{{bank.name}}</h2>
-        <button @click="bank.lobbyVotes++" class="pointer underline-hover button bn bg-black white">Vote</button>
-        <span v-for="v in bank.lobbyVotes" :key="v" class="pointer underline-hover" @click="bank.lobbyVotes--">$</span>
-    </div>
+# Climate
+blah blah blah
+
+---
+
+<div class="news-update">
+
+# News Update
+
+IPCC scientists report that they are deeply concerned by the lack of action from the financial sector. Share prices for Chevron and BP have a surprisingly strong quarter.
+
 </div>
 
 ---
 
-<!-- Public Pressure -->
-<div v-scope="pledge">
-        <div class="bank" v-for="(bank,i) in banks" :key="i">
-                <h2> {{bank.name}} Bank</h2>
-            <form class="publicpressure">
-                <input type="checkbox" v-model="bank.publicPressure" name="publicPressure" :id="bank.name + '-pp'" :value="true"><label :for="bank.name + '-pp'" class="pointer">Public Pressure</label> 
-            </form>
-        </div>
+<slide class="investment-decision" />
+
+# Investment Decision: <br> New Green Tech
+
+You have the opportunity to invest in two different companies.
+
+- <i class="fa fa-building orange"></i> **Concredible** – a building materials company making concrete that sequesters atmospheric carbon as it hardens
+- <i class="fa fa-seedling green"></i> **Behemoss** – a biohacking agritech startup attempting to capture carbon in the atmosphere via genetically modified edible moss
+
+<next>Proceed</next>
+
+---
+
+Because these technologies are speculative, there's a chance that the research will be unproductive and your money will be lost. However, if the research is successful, it could be a game-changer in terms of its impact on the environment.
+The profit margins will be slim – if the research is successful, you'll get your tokens back, and you'll get 1 additional token of profit.
+So if you put in 1 token and the research is successful, you get 2 tokens back. If you put in 4 tokens, you'd get 5 back.
+
+<next>When you're ready, proceed.</next>
+
+---
+
+At the moment, there's a 10% chance of the research yielding fruit. Each token invested in a technology will increase the chance of success by 10%.
+You have three minutes in your breakout rooms to decide how much, if anything, you'd like to invest in one or both of these technologies. You should also decide who will reveal your bank’s decision.
+
+<countdown duration="180"/>
+
+<next>When you're back from the breakout rooms, proceed.</next>
+
+---
+
+Welcome back. It’s time to see what was decided.
+One player from each bank will reveal how much you are investing.
+Investment announcers, please identify yourselves.
+On the count of three, send a message to the group chat that looks like this:
+“[Bank Name], Concredible [# of tokens invested], Behemoss [# of tokens invested]”
+
+<next>When all banks have revealed their decision, proceed</next>
+
+---
+
+# Results
+*Click the question marks to record each bank’s decision.*
+<next :disabled="score.commitments[0] == 'UNDECIDED'" >When you're ready, proceed.</next>
+
+<investments :banks="banks" v-on:invest="setInvestment">
+
+---
+
+# Research takes time.
+# We’ll see the results of the research later.
+
+---
+
+# Internal Bank Dynamics
+
+Banks are not monolithic structures. They are made up of hundreds or thousands of employees. Many employees would like their banks to be more climate active, but they have their own concerns and pressures.
+Sometimes bank employees reach out to external allies like NGOs and newspapers. These organisations apply scrutiny and pressure which can nudge the banks to more sustainable actions.
+
+---
+
+If you want to engage with external allies, you'll send a private message to the facilitator with the word ALLY.
+Don't do this yet! We'll go bank by bank – so wait for your bank's turn before you send a message.
+How to send a private message: Use the chat function. Click on the facilitator's name. Then type and send the word ‘ALLY’.
+
+---
+
+Be warned: even though this is secret, taking this step may have consequences for your own career.
+But that extra scrutiny might benefit your bank too.
+The risks and rewards for this decision won't be clear until later.
+
+---
+
+<ally-pause :banks="banks">
+</ally-pause>
+
+---
+
+# Results
+*Facilitator: click on the banks that had at least one employee message ALLY.*
+
+<ally-results :banks="banks" />
+
+---
+
+# Results
+
+There is a wave of public pressure and scrutiny applied to banks who brought in external allies. The short-term affect is to impact the reputation of those banks, which affects their market share.
+All banks who had someone reach out to external allies lose 1 token.
+We'll see the long-term effects of this decision later.
+
+---
+
+# Let’s take a look at the scores.
+
+---
+
+<scoreboard :score="score" rounds="['Round 1','Interstitial A']"  :banks="banks" />
+<next>When you're ready, proceed.</next>
+
+---
+
+# Round 2
+
+It's two years in the future. In the last few months, public debate has focused on banks providing loans to fossil fuel companies.
+Your bank, like many others, has contracts with fossil fuel companies. You plan to conclude these loans by 2050 as part of your net zero plans.
+But now you're under pressure to speed up these plans.
+
+---
+
+Climate NGOs argue that 2050 is too far away. They want banks to commit to more ambitious timeframes for phasing out fossil fuels.
+On the other hand, an unrealistic deadline will make your bank look naive, and will be embarrassing if you can't achieve it.
+Your bank's sustainability team has proposed to bring forward your deadline for phasing out fossil fuels to 2035.
+
+---
+
+You have two options:
+
+- You can raise your commitment and promise to be completely out of fossil fuels by 2035.
+- Or you can stick to your current commitments and retain your deadline of no more fossil fuels by 2050.
+
+You've got a press conference tomorrow to make a public statement, and you need to make your decision.
+
+---
+
+Public pressure is mounting for significant climate action, but it's still costly for banks to make the first move if their peers don't follow.
+Remember, if the banks do different things, then:
+
+- All the banks who raised their commitment lose 2 points.
+- All the banks who stuck with their current commitment gain 1 point.
+
+---
+
+In just a moment, you’ll meet with your team to make decisions:
+
+- Who will make the public announcement – who will hold up the piece of paper? 
+- Decide whether to raise your commitment or stick.
+
+---
+
+One more thing: if you stuck with your existing commitments in the previous round, there's now a 2 token cost to raise your commitment.
+If you raised your commitment last turn, it doesn't cost anything additional to continue to raise this turn.
+In your breakout room, decide whether to stick or raise. You have 5 minutes.
+
+<countdown duration="300">
+
+---
+
+Welcome back. It’s time to see what was decided.
+One player from each bank will make the announcement.
+Announcers, please identify yourselves and prepare your arrow.
+On the count of three, simultaneously reveal your arrow pointing up or down.
+
+---
+
+# Results
+*Click the question marks to record each bank’s decision.*
+<next :disabled="score.commitments[1] == 'UNDECIDED'" >When all bank decisions have been recorded, proceed.</next>
+
+<commitments :banks="banks" round="1" v-on:commit="setCommitment" :score="score">
+
+---
+
+# Let’s take a look at the scores.
+
+---
+
+<scoreboard :score="score" rounds="['Round 1', 'Interstitial A', 'Round 2']" :banks="banks" />
+
+---
+
+news updates
+
+---
+
+# New Regulation
+
+One of the biggest drivers in the financial system are governments and regulators. The decisions of governments and central banks shape the landscape that banks operating within since they determine the rules that banks are required to comply with.
+To break the deadlock of climate inaction, financial regulators have put forward two possible policies. The banks will vote on which they prefer.
+
+---
+
+The first policy is Green Subsidies.
+This is a package of laws which ease capital holding restrictions for
+sustainable loans and inject money directly into green sectors.
+If we go with this policy, banks get 3 tokens for each occasion they’ve previously raised their commitment.
+
+---
+
+The second policy is Enhanced Credit Guidance.
+In this case, central banks and regulators take a much more interventionist
+role and block certain kinds of loans to high-carbon sectors.
+If we go with this policy, each bank pays 1 token, and we remove the transition cost for banks to raise their commitments.
+
+---
+
+You'll decide in your breakout rooms which policy you're going to vote for.
+Then you’ll have the opportunity to spend tokens to buy additional votes.
+You can negotiate with other banks and make the decision collectively if you like.
+
+---
+
+Before you go to your breakout rooms:
+The employees who engaged with external allies previously have now been found out. Rocking the boat this way has had an impact on your career.
+For this next decision, the bank has locked you out of the conference room as potential trouble- makers.
+You can stand at the glass doors, but you can't speak.
+If you messaged ALLY earlier, mute your microphone and don't use the chat during this discussion. You can gesture as much as you like to express your opinion.
+
+---
+
+The policy choices are:
+- GreenSubsidies: banks get 3 tokens for each occasion they’ve previously raised their commitment
+- Enhanced Credit Guidance: each bank pays 1 token, and we remove the transition cost for banks to raise their commitments
+In your breakout rooms, decide which policy to vote for and discuss whether you will buy additional votes. You have 3 minutes.
+
+<countdown duration="180">
+
+---
+
+# Voting
+*Click the thumbs up underneath the bank to reflect voting.*
+
+<regulation-votes :banks="banks"></regulation-votes>
+
+---
+
+# Let’s take a look at the scores.
+
+---
+
+<scoreboard :score="score" rounds="['Round 1', 'Interstitial A', 'Round 2', 'Interstitial B']" :banks="banks" />
+
+---
+
+# Round 3
+It's now six years in the future. Severe weather events are impacting the planet and the urgency around climate action has reached a critical point.
+Industries are under increasing pressure to decarbonise. Many people say that banks are responsible for the emissions of the businesses they loan money to. NGOs say that banks should be actively forcing their clients to decarbonise and cancelling contracts with those that don't move fast enough. Other people argue that a bank's job is to offer clients a service, not to interfere with their business.
+Should banks be helping fund their clients' decarbonisation?
+
+---
+
+You have two options:
+
+- You can raise your commitment and financially incentivise your clients to accelerate their decarbonisation. This includes investing money to drive up the pace of change in emerging green sectors.
+
+- Or you can stick to your current commitments and continue to honour your existing relationships. You can help clients to transition to net zero if they want it, but you won't force them before they're ready.
+
+---
+
+This is the last round of the game. As in previous rounds, if the banks do different things, then:
+
+- All the banks who raised their commitment lose 2 points.
+- All the banks who stuck with their current commitment gain 1 point
+
+---
+
+In just a moment, you’ll meet with your team to make decisions:
+
+- Who will make the public announcement – who will hold up the piece of paper? 
+- Decide whether to raise your commitment or stick.
+
+---
+
+<div v-if="score.winningRegulation == 'GREENSUBSIDIES'">
+
+If you raised your commitment last turn, it doesn't cost anything additional to continue to raise this turn.
+
+</div>
+<div v-else> 
+
+Because of new regulation Enhanced Credit Guidance, there is no cost to raise your commitment if you stuck last turn.
+
+</div>
+
+*In your breakout room, decide whether to stick or raise. You have 5 minutes.*
+
+<countdown duration="180"/>
+
+---
+
+Welcome back. It’s time to see what was decided.
+One player from each bank will make the announcement.
+
+Announcers, please identify yourselves and prepare your arrow.
+
+On the count of three, simultaneously reveal your arrow pointing up or down.
+
+---
+
+# Results
+*Click the question marks to record each bank’s decision.*
+<next :disabled="score.commitments[2] == 'UNDECIDED'" >When all bank decisions have been recorded, proceed.</next>
+
+<commitments :banks="banks" round="1" v-on:commit="setCommitment" :score="score">
+
+---
+
+# Before we reveal the final scores...
+
+---
+
+# Halo Effect
+
+If your bank had someone in it that messaged ALLY, you've been under much more public scrutiny from external NGOs. You've been criticised for your mistakes – but also, there's more attention on the good things you've done.
+
+---
+
+If you engaged with external allies and your bank has raised its commitment two or more times, you have established a reputation as a ‘green leader’. You have access to the best green financeable projects, and a great customer base.
+This has a financial benefit to your bank of 2 tokens. The following banks receive this bonus:
+
+<div v-for="(b,i) in banks.filter(b => b.publicPressure)" :key="i">
+    <div>{{b.name}} Bank </div>
 </div>
 
 ---
 
-<!-- Bank commitments screen 2 -->
+# R&D Results
 
-<slide class="commitments-screen round-two"/>
-<div v-scope="pledge" class="banks" >
-    <div class="bank" v-for="(bank,i) in banks" :key="i">
-        <div class="avatar"><bank></div>
-        <p> {{bank.name}} Bank<p>
-        <form class="commitments">
-            <div class="commitment stay" :class="bank.commitments[1] == 'STAY' ? 'selected' : ''" @click="bank.commitments[0] = 'STAY'" >Stay</div>
-            <div class="commitment raise" :class="bank.commitments[1] == 'RAISE' ? 'selected' : ''" @click="bank.commitments[0] = 'RAISE'">Raise</div>
-        </form>
-    </div>
-</div>
+Let's check in to see how our R&D went. Were either of our green startups successful?
 
----
-
-<!-- Points round up 2 -->
-
-<div v-scope="pledge">
-    <h1>
-        Points for round two
-    </h1>
-    <div class="bank" v-for="(bank,i) in roundTwoScore.banks" :key="i">
-        <h2> {{bank.name}} Bank</h2>
-        <span v-for="t in bank.tokens" :key="t">
-            *
-        </span>
-    </div>
-</div>
-
----
-
-<!-- Regulations -->
-
-<div v-scope="pledge">
-    <div class="bank mb4"  v-for="(bank,i) in banks" :key="i">
-        <h3 class="mb1">{{bank.name}}</h2>
-        <button v-for="(regulation,i) in regulations" :key="i" @click="
-            regulation.votes++;  bank.regulationVotes++
-        " class="pointer underline-hover button bn bg-black white db">Vote for {{regulation.name}}</button>
-    </div>
-    <div :class="regulation.passed ? 'red' : 'white'" v-for="(regulation,i) in regulations" :key="i" >
-        <button :class="['i bg-black underline-hover bn', regulation.passed ? 'red' : 'white']" @click="regulation.passed = !regulation.passed">{{regulation.name}}</button>:{{regulation.votes}}
-    </div>
-</div>
-
----
-
-<!-- Bank commitments screen 2 -->
-
-<div v-scope="pledge">
-    <div class="bank" v-for="(bank,i) in banks" :key="i">
-        <h2> {{bank.name}} Bank</h2>
-        <form class="commitments">
-        <input type="radio" v-model="bank.commitments[2]" name="commitment" :id="bank.name + '-raisecc2'" value="1"><label :for="bank.name + '-raisecc2'" class="pointer">Raise</label> 
-        <input type="radio" v-model="bank.commitments[2]" name="commitment" :id="bank.name + '-stickcc2'" value="0"><label :for="bank.name + '-stickcc2'" class="pointer">Stick</label> 
-        </form>
-    </div>
-</div>
-
----
-
-<!-- Bank commitments screen 2 -->
-
-<div v-scope="pledge">
-    <h1>
-        Points for round three
-    </h1>
-    <div class="bank" v-for="(bank,i) in roundThreeScore.banks" :key="i">
-        <h2> {{bank.name}} Bank</h2>
-        <span v-for="t in bank.tokens" :key="t">
-            *
-        </span>
-    </div>
-</div>
+Without any additional funding, there was a 10% chance that research would be successful. Collectively, the banks contributed tokens to research, which brings the likelihood of success up by
+10% per invested token. After investment, the odds look like this:
+70% chance of success 30% chance of success
 
 ---
 
