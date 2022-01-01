@@ -8,42 +8,44 @@
 ***********************/
 
 
-
-import { createApp } from "vue"
-import pressie from "./pressie.js"
-import { createPopper } from '@popperjs/core'
-
 thePledge(document.querySelector("#app"))
 
 function thePledge(el){
     const initialBanks = [
-        new Bank({
-            name: "Armadillo", 
-            tokens: 10, 
-            commitments: ["UNDECIDED","UNDECIDED","UNDECIDED"],
-            // investments: {
-            //     behemoss: 1,
-            //     concredible: 0
-            // }
-        }),
-        new Bank({
-            name: "Vulture", 
-            tokens: 10, 
-            commitments: ["UNDECIDED","UNDECIDED","UNDECIDED"],
-            // investments: {
-            //     behemoss: 1,
-            //     concredible: 1
-            // }
-        }),
-        new Bank({
-            name: "Penguin", 
-            tokens: 10, 
-            commitments: ["UNDECIDED","UNDECIDED","UNDECIDED"],
-            // investments: {
-            //     behemoss: 2,
-            //     concredible: 1
-            // }
-        }),
+        // new Bank({
+        //     name: "Armadillo", 
+        //     avatar: "fa-galaxy",
+        //     slogan: "Curl up and stay safe",
+        //     tokens: 10, 
+        //     commitments: ["RAISE","RAISE","RAISE"],
+        //     investments: {
+        //         behemoss: 1,
+        //         concredible: 0
+        //     },
+        //     publicPressure: true
+        // }),
+        // new Bank({
+        //     name: "Vulture",
+        //     avatar: 'fa-skull-cow', 
+        //     slogan: "Do whats necessary, not what's popular",
+        //     tokens: 10, 
+        //     commitments: ["STICK","STICK","STICK"],
+        //     investments: {
+        //         behemoss: 1,
+        //         concredible: 1
+        //     }
+        // }),
+        // new Bank({
+        //     name: "Penguin", 
+        //     avatar: 'fa-egg',
+        //     slogan: "Huddle up and wait out the winter",
+        //     tokens: 10, 
+        //     commitments: ["STICK", "RAISE", "RAISE"],
+        //     investments: {
+        //         behemoss: 2,
+        //         concredible: 1
+        //     }
+        // })
         // new Bank({
         //     name: "Tiger", 
         //     tokens: 10, 
@@ -67,7 +69,8 @@ function thePledge(el){
                 newBankEditor: false,
                 selectedBank: 0,
                 commitmentsForm: false, 
-                activeSlide: Number(window.location.hash.replace("#",'')) || 0
+                activeSlide: Number(window.location.hash.replace("#",'')) || 0,
+                randoms: [Math.random(), Math.random()]
             }
         },
         computed: {
@@ -88,7 +91,7 @@ function thePledge(el){
                     ]
                     bank["Interstitial A"] = getInterstitialAScore(bank, bbb)
                     bank["Interstitial B"] = getInterstitialBScore(bank, bbb)
-                    bank["Final Score"] = getFinalScore(bank, bbb)
+                    bank["Final Score"] = getFinalScore(bank, bbb, this.investments)
                     return bank
                 })
                 let commitments = [
@@ -107,19 +110,51 @@ function thePledge(el){
                 //     "Final Score"
                 // ]
 
-                let totalCommits = (this.banks.length * 3) / this.banks.reduce(
-                    (pp,cc) => {
-                        return pp += cc.commitments.reduce((pv,cv) => {
-                            return pv += cv == "RAISE" ? 1 : 0
-                        }, 0)
-                    }
-                ,0)
+                let totalCommits = 0
+                this.banks.forEach(bb => {
+                    totalCommits += bb.commitments.filter(cc => cc == "RAISE").length
+                })
+
+                let percentageCommits = ( totalCommits
+                    + (this.investments.behemoss.successful ? 1 : 0) 
+                    + (this.investments.concredible.successful ? 1 : 0)) / (banks.length * commitments.length)
+
+                console.log(( totalCommits
+                    + (this.investments.behemoss.successful ? 1 : 0) 
+                    + (this.investments.concredible.successful ? 1 : 0)))
+                console.log(percentageCommits)
+
+                let degrees =   percentageCommits < 0.26 ? 3.5 :
+                                percentageCommits < 0.51 ? 3 : 
+                                percentageCommits < 0.76 ? 2 :
+                                1.5;
 
                 return {
                     banks: banks,
                     commitments: commitments,
                     totalCommitments: totalCommits,
-                    winningRegulation: getWinningRegulation(banks)
+                    winningRegulation: getWinningRegulation(banks),
+                    degrees: degrees
+                }
+            },
+            investments(){
+
+                let behemossTokens = this.banks.reduce((pp,cc) => {
+                    return pp + cc.investments.behemoss
+                }, 0)
+                let concredibleTokens = this.banks.reduce((pp,cc) => {
+                    return pp + cc.investments.concredible
+                }, 0)
+
+                let behemossSuccessPercent = (1 + 1 * behemossTokens) / 10
+                let concredibleSuccessPercent = (1 + 1 * concredibleTokens) /10
+
+                let behemossSuccess = this.randoms[0] < behemossSuccessPercent
+                let concredibleSuccess = this.randoms[1] < concredibleSuccessPercent
+
+                return {
+                    concredible: {successful: concredibleSuccess, funded: concredibleSuccessPercent, random: this.randoms[0]},
+                    behemoss: {successful: behemossSuccess, funded: behemossSuccessPercent, random: this.randoms[1]}
                 }
             }
         },
@@ -205,6 +240,17 @@ function thePledge(el){
         </div> `
     })
 
+    app.component('miniscore', {
+        props: ["score", "round"],
+        template: `
+            <table class="miniscore" v-if="score.banks[i]">
+                <tr class="bank" v-for="(b,i) in score.banks" :key="i">
+                    <td><i :class="['fa', b.avatar]"></i></td><td> {{round >= 0 ? score.banks[i].rounds[round].score : score.banks[i][round].score}}</td>
+                </tr>
+            </table>
+        `
+    })
+
     app.component('bankintro', {
         props: ["banks"],
         emits: ["addBank", "removeBank"],
@@ -218,11 +264,13 @@ function thePledge(el){
             showNewBankEditor(){
                 this.newBankEditor = true
                 this.templateBank.name = ""
+                this.templateBank.slogan = ""
             },
             dismissNewBankEditor(){
                 this.newBankEditor = false
             },
             submitNewBankEditor(){
+                this.templateBank.avatar = avatars()[Math.floor(Math.random() * avatars().length)]
                 this.$emit('addBank', this.templateBank)
                 this.dismissNewBankEditor()
             },
@@ -234,33 +282,26 @@ function thePledge(el){
         <div>
             <div v-if="banks.length < 1" class="no-banks">
                 <span class="instruction">Click to add bank.</span>
-                <div class="add-bank btn bg-green white" @click="showNewBankEditor">+</div>
+                <div class="add-bank btn bg-green white" @click="showNewBankEditor"><i class="fa fa-plus white"></i></div>
             </div>
             <div v-else class="banks">
                 <div class="bank" v-for="(bank,i) in banks" :key="i">
-                    <div class="avatar"></div>
-                    <p> {{bank.name}} </p>
-                    <span class="token-count">
-                        <span v-if="bank.tokens > 0" class="positive">
-                            <span class="token-text">
-                            {{bank.tokens}} {{ banks.tokens > 1 ? 'token' : 'tokens' }}  </span>
-                            <span v-for="t in bank.tokens" :key="t" class="token">.</span>
-                        </span>
-                        <span v-else class="negative token-text">
-                            {{bank.tokens}}
-                        </span>
-                    </span>
+                    <div class="avatar"><i :class="['fa-light', bank.avatar]"></i></div>
+                    <p> {{bank.name}} Bank </p>
+                    <em class="slogan">&#8220{{bank.slogan}}&#8221</em>
                     <span @click="removeBank(i)" class="remove">
                         <i class="fa fa-times"></i>
                     </span>
                 </div>
-                <div class="add-bank btn bg-green white" @click="showNewBankEditor">+</div>
+                <div class="add-bank btn bg-green white" @click="showNewBankEditor"><i class="fa fa-plus"></i></div>
             </div>
             <transition name="slide-fade">
                 <div class="bank-action-form" v-show="newBankEditor" v-on:click.self="dismissNewBankEditor">
                     <form v-on:submit.prevent="submitNewBankEditor">
                         <label for="bankname">What's your animal?</label>
                         <input id="bankname" v-model="templateBank.name" placeholder="" class="input">
+                        <label for="bankname">What's your slogan?</label>
+                        <input id="bankslogan" v-model="templateBank.slogan" placeholder="" class="input">
                         <div class="bank-ok btn" @click="submitNewBankEditor"><i class="fa fa-check white"></i></div>
                     </form>
                 </div>
@@ -297,18 +338,18 @@ function thePledge(el){
             <div class="bank" v-for="(bank,i) in banks" :key="i">
                 <div :class="['commitment', bank.commitments[round]]">
                     <div v-if="bank.commitments[round] == 'RAISE'" class="raise">
-                        <i class="fa fa-arrow-up">
+                        <i class="fa fa-arrow-up"></i>
                     </div>
                     <div v-if="bank.commitments[round] == 'STICK'" class="stick">
-                        <i class="fa fa-arrow-down">
+                        <i class="fa fa-arrow-down"></i>
                     </div>
                     <div v-if="bank.commitments[round] == 'UNDECIDED'" class="undecided btn white bg-green" @click="showBankCommitmentForm(i)">
-                        <i class="fa fa-question">
+                        <i class="fa fa-question"></i>
                     </div>
                 </div>
-                <div class="avatar"><bank></div>
-                <p> {{bank.name}} Bank<p>
-                <ul v-if="score.commitments[round] != 'UNDECIDED'">
+                <div class="avatar"><i :class="['fa-light', bank.avatar]"></i></div>
+                <p> {{bank.name}} Bank</p>
+                <ul class="messages" v-if="score.commitments[round] != 'UNDECIDED' && score.banks[i]">
                     <li v-for="m in score.banks[i].rounds[round].messages" :key="i">
                         {{m}}
                     </li>
@@ -316,8 +357,9 @@ function thePledge(el){
             </div>
             <transition name="slide-fade">
                 <div class="bank-action-form bank-action-form-0" v-show="bankCommitmentForm" @click.self="dismissBankCommitmentForm">
-                    <form class="inner-content">
-                        What did {{banks[selectedBank].name}} Bank do?
+                    <form v-if="banks[selectedBank]" class="inner-content">
+                        <i :class="['avatar fa-light', banks[selectedBank].avatar]"></i>
+                        <p>What did {{banks[selectedBank].name}} Bank do?</p>
                         <div class="options">
                             <div class="stick" @click="commit('STICK')"> <span class="label">stick</span><span class="btn"><i class="fa fa-arrow-down"></i></span></div>
                             <div class="raise" @click="commit('RAISE')"> <span class="label">raise</span><span class="btn"><i class="fa fa-arrow-up"></i></span></div>
@@ -326,6 +368,126 @@ function thePledge(el){
                 </div>
             </transition>
         </div>
+        `
+    })
+
+
+    app.component("news-update", {
+        props: ["score", "part"],
+        data(){
+            return {
+                index: 0,
+                showquote: true,
+                figuresData: {
+                    "part 0" : [
+                        { 
+                            title: `Mark Carney <br/> Former Governor, Bank of England`,
+                            quote: {
+                                bad: "Despite some positive signals, I worry that banks are simply not taking the warnings of scientists seriously.",
+                                good: "Despite some legitimate concerns, I am positive that the financial sector is taking responsibility for the planet’s future."
+                            },
+                            img: "markcarney"
+                        },
+                        {
+                            title: `Alexandria Ocasio-Cortez <br/> United States Representative`,
+                            quote: {
+                                bad: "The ship is steering straight towards an iceberg, and there are banks telling us it will cost too much to turn the wheel.",
+                                good: "I’m not going to congratulate banks for doing the right thing for a change. This is an existential global threat. Step it up and do it now."
+                            },
+                            img: "aoc"
+                        }
+                    ],
+                    "part 1" : [
+                        { 
+                            title: `Greta Thurnburg <br/> Activist`,
+                            quote: {
+                                bad: "The internal teams of these banks are cowards and criminals and they will be remembered that way.",
+                                good: "The banks are telling us that they’re taking action. But that’s not enough. You have to do more. You have to do the impossible. And you have to do it now."
+                            },
+                            img: "greta"
+                        },
+                        {
+                            title: `Larry Fink <br/> CEO, BlackRock`,
+                            quote: {
+                                bad: "I applaud banks for refusing to capitulate to unrealistic activist demands, and instead taking cautious but realistic steps towards a sustainable future.",
+                                good: "While I applaud banks for taking bold steps towards a sustainable future, I do worry that financial institutions are allowing extremist NGOs to set the agenda."
+                            },
+                            img: "larry"
+                        }
+                    ]
+                }
+    
+            }
+        },
+        computed: {
+            ratio() {
+                return [ 
+                    this.score.commitments[0] / this.score.banks.length , 
+                    (this.score.commitments[0] + this.score.commitments[1]) / (this.score.banks.length * 2)
+                ]
+            },
+            figures() {
+                return {
+                    "part 0" : { 
+                        title: this.figuresData["part 0"][this.index].title ,
+                        quote: this.ratio[0] > .5 ? this.figuresData["part 0"][this.index].quote.good : this.figuresData["part 0"][this.index].quote.bad,
+                        img: this.figuresData["part 0"][this.index].img
+                    },
+                    "part 1" : {
+                        title: this.figuresData["part 1"][this.index].title ,
+                        quote: this.ratio[0] > .5 ? this.figuresData["part 1"][this.index].quote.good : this.figuresData["part 1"][this.index].quote.bad,
+                        img: this.figuresData["part 1"][this.index].img
+                    }
+                }
+            }
+        },
+        methods: {
+            swap(){
+                this.showquote = false
+                window.setTimeout(()=>{
+                    this.index = this.index == 0 ? 1 : 0
+                    this.showquote = true
+                }, 300)
+            }
+        },
+        template: `
+            <div class="news-update">
+                <h1 >News Update</h1>
+                <span v-if="part == 0">
+                    <p v-if="ratio[0] > .5">
+                        So far, we have {{score.commitments[0]}} out of a total possible {{score.banks.length}} raised commitments. IPCC scientists report that they are deeply concerned by the lack of action from the financial sector. Chevron and BP have a surprisingly strong quarter, and share prices are up.
+                    </p>
+                    <p v-else>
+                        So far, we have {{score.commitments[0]}} out of a total possible {{score.banks.length}} raised commitments. IPCC scientists are cautiously positive about the activity coming from the financial sector. Share prices for Chevron and BP undergo a significant drop this quarter.
+                    </p>
+                    <transition name="slide-fade">
+                        <div class="pullquote" v-show="showquote">
+                            <div class="quote" v-on:click="swap">
+                                {{figures['part 0'].quote}}
+                            </div>
+                            <div class="figure-title" v-html="figures['part 0'].title"></div>
+                            <div :class="['figure-img',figures['part 0'].img]"></div>
+                        </div>
+                    </transition>
+                </span>
+                <span v-else>
+                    <p v-if="ratio[1] > .5">
+                        So far, we have {{score.commitments[1] + score.commitments[0]}} out of a total possible {{score.banks.length * 2}} raised commitments. The latest news from the financial sector sends a ripple of quiet panic through the international climate community. Meanwhile, there is a boom on property sales in remote parts of New Zealand as wealthy billionaires start buying up land.
+                    </p>
+                    <p v-else>
+                        So far, we have {{score.commitments[1] + score.commitments[0]}} out of a total possible {{score.banks.length * 2}} raised commitments. The latest announcements from the financial sector send a small signal of hope to the international climate community. There is a boom in new renewable energy projects and the value of unmined coal begins to fall radically.                    </p>
+                    <transition name="slide-fade">
+                        <div class="pullquote" v-show="showquote">
+                            <div class="quote" v-on:click="swap">
+                                {{figures['part 1'].quote}}
+                            </div>
+                            <div class="figure-title" v-html="figures['part 1'].title"></div>
+                            <div :class="['figure-img',figures['part 1'].img]"></div>
+                        </div>
+                    </transition>
+                </span>
+
+            </div>
         `
     })
 
@@ -364,19 +526,20 @@ function thePledge(el){
                         class="undecided btn white bg-green" 
                         @click="showBankForm(i)"
                     >
-                        <i class="fa fa-question">
+                        <i class="fa fa-question"></i>
                     </div>
-                    <div v-else>
-                        <div><i class="fa fa-building orange"></i><span>{{bank.investments.concredible}}</span></div>
-                        <div><i class="fa fa-seedling green"></i><span>{{bank.investments.behemoss}}</span></div>
-                    </div>
+                    <table v-else>
+                        <tr><td><i class="fa fa-building orange"></i></td><td>{{bank.investments.concredible}}</td></tr>
+                        <tr><td><i class="fa fa-seedling green"></i></td><td>{{bank.investments.behemoss}}</td></tr>
+                    </table>
                 </div>
-                <div class="avatar"><bank></div>
-                <p> {{bank.name}} Bank<p>
+                <div class="avatar"><i :class="['fa-light', bank.avatar]"></i></div>
+                <p> {{bank.name}} Bank</p>
             </div>
             <transition name="slide-fade">
                 <div class="bank-action-form" v-show="bankForm" @click.self="dismissBankForm">
-                    <form class="inner-content" v-on:submit="invest">
+                    <form class="inner-content" v-if="banks[selectedBank]" v-on:submit="invest">
+                        <div class="avatar"><i :class="['fa-light', banks[selectedBank].avatar]"></i></div>
                         What did {{banks[selectedBank].name}} Bank invest?
                         <div class="investments">
                             <div><i class="fa fa-building orange"></i><input type="number" v-model="investments.concredible"></div>
@@ -399,8 +562,8 @@ function thePledge(el){
                     <div :class="[bank.publicPressure ? 'bg-green':'bg-red', 'btn']" v-on:click="bank.publicPressure = !bank.publicPressure">
                         <i class="fa fa-solid fa-handshake" />
                     </div>
-                    <div class="avatar"><bank></div>
-                    <p> {{bank.name}} Bank<p>
+                    <div class="avatar"><i :class="['fa-light', bank.avatar]"></i></div>
+                    <p> {{bank.name}} Bank</p>
                 </div>
             </div>
         `
@@ -422,21 +585,29 @@ function thePledge(el){
         template: `
             <div class="regulation-votes actions">
                 <div class="bank" v-for="(bank,i) in banks" :key="i">
-                    <div class="avatar"><bank></div>
-                    <p> {{bank.name}} Bank<p>
-                    <div class="vote" v-if="typeof bank.lobbyVotes.greensubsidies != 'number'" v-on:click="vote(i,0)">
+                    <div class="avatar"><i :class="['fa-light', bank.avatar]"></i></div>
+                    <p> {{bank.name}} Bank</p>
+                    <div class="vote hover" v-if="typeof bank.lobbyVotes.greensubsidies != 'number'" v-on:click="vote(i,0)">
                         Green Subsidies
                     </div>
-                    <div class="vote" v-else-if="bank.lobbyVotes.greensubsidies > bank.lobbyVotes.enhancedcreditguidance" v-on:click="bank.lobbyVotes.greensubsidies++" >
-                        Green Subsidies {{bank.lobbyVotes.greensubsidies}}
-                        <span class="add-more">+</span>
+                    <div class="vote more"  v-if="bank.lobbyVotes.greensubsidies > bank.lobbyVotes.enhancedcreditguidance">
+                        <transition name="slide-fade"><div class="add-less vote-control" v-show="bank.lobbyVotes.greensubsidies > 1" v-on:click="bank.lobbyVotes.greensubsidies--"><i class="fa fa-minus"></i></div></transition>
+                        <div class="vote-text">Green Subsidies <span class="count">{{bank.lobbyVotes.greensubsidies}}</span></div>
+                        <div class="add-more vote-control" v-on:click="bank.lobbyVotes.greensubsidies++"><i class="fa fa-plus"></i></div>
                     </div>
-                    <div class="vote" v-if="typeof bank.lobbyVotes.enhancedcreditguidance != 'number'" v-on:click="vote(i,1)">
+                    <div class="vote disabled" v-if="bank.lobbyVotes.greensubsidies > bank.lobbyVotes.enhancedcreditguidance">
                         Enhanced Credit Guidance
                     </div>
-                    <div class="vote" v-else-if="bank.lobbyVotes.enhancedcreditguidance > bank.lobbyVotes.greensubsidies" v-on:click="bank.lobbyVotes.enhancedcreditguidance++" >
-                        Enhanced Credit Guidance {{bank.lobbyVotes.enhancedcreditguidance}}
-                        <span class="add-more">+</span>
+                    <div class="vote hover" v-if="typeof bank.lobbyVotes.enhancedcreditguidance != 'number'" v-on:click="vote(i,1)">
+                        Enhanced Credit Guidance
+                    </div>
+                    <div class="vote disabled" v-if="bank.lobbyVotes.enhancedcreditguidance > bank.lobbyVotes.greensubsidies">
+                        Green Subsidies
+                    </div>
+                    <div class="vote more" v-if="bank.lobbyVotes.enhancedcreditguidance > bank.lobbyVotes.greensubsidies" >
+                    <transition name="slide-fade"><div class="add-less vote-control" v-show="bank.lobbyVotes.enhancedcreditguidance > 1" v-on:click="bank.lobbyVotes.enhancedcreditguidance--"><i class="fa fa-minus"></i></div></transition>
+                        <div class="vote-text">Enhanced Credit Guidance <span class="count">{{bank.lobbyVotes.enhancedcreditguidance}}</span></div>
+                        <div class="add-more vote-control" v-on:click="bank.lobbyVotes.enhancedcreditguidance++"><i class="fa fa-plus"></i></div>
                     </div>
                 </div>
             </div>
@@ -447,13 +618,18 @@ function thePledge(el){
         props: ["banks"],
         data(){
             return {
-                activeBank : 0
+                activeBank : 0,
+                show: true
             }
         },
         methods: {
             nextSlide(e){
                 if(this.activeBank < this.banks.length-1) {
-                    this.activeBank ++
+                    this.show = false
+                    window.setTimeout(()=>{
+                        this.activeBank ++
+                        this.show = true
+                    }, 300)
                 } else {
                     prz.controls.nextSlide()
                     window.setTimeout(() => {
@@ -463,16 +639,21 @@ function thePledge(el){
             }
         },
         template: `
-            <div v-on:nextSLide>
-                <div class="title">{{banks[activeBank].name}} Bank</div>
-                <div>
-                    Employees of {{banks[activeBank].name}} Bank, you have 5 seconds to privately message ALLY.
+            <transition name="slide-fade">
+                <div class="ally-pause" v-show="show" v-if="banks[activeBank]">
+                    <div class="title tc">
+                        <i :class="['avatar fa-light', banks[activeBank].avatar]"></i>
+                        <h2> {{banks[activeBank].name}} Bank </h2>
+                    </div>
+                    <div class="tc mt5">
+                        Employees of {{banks[activeBank].name}} Bank, you have 5 seconds to privately message ALLY.
+                    </div>
                 </div>
-            </div>
+            </transition>
             <div :class="[disabled ? 'disabled' : '', 'pressie-nav']">
-                <span class="text" ><slot></slot></span>
+                <span class="text" >When you’re ready, proceed.</span>
                 <a class="next btn" data-pressie="next" v-on:click="nextSlide">
-                    <i class="fas fa-arrow-right"></i>
+                    <i class="fa fa-arrow-right"></i>
                 </a>
                 <a class="previous" data-pressie="previous"> previous </a> 
             </div>
@@ -565,7 +746,7 @@ function thePledge(el){
         <div :class="[disabled ? 'disabled' : '', 'pressie-nav']">
             <span class="text" ><slot></slot></span>
             <a class="next btn" data-pressie="next" v-on:click="nextSlide">
-                <i class="fas fa-arrow-right"></i>
+                <i class="fa-regular fa-arrow-right"></i>
             </a>
             <a class="previous" data-pressie="previous"> previous </a> 
         </div>
@@ -585,7 +766,8 @@ function thePledge(el){
                     <tr>
                         <th></th>
                         <th v-for="(b,i) in score.banks" :key="i">
-                            {{b.name}} Bank
+                            <div><i :class="['fa-light', b.avatar]"></i></div>
+                            <div>{{b.name}} Bank</div>
                         </th>
                     </tr>
                     <tr>
@@ -622,7 +804,7 @@ function thePledge(el){
                         <span v-if="rounds.indexOf('Round 3') > 0">
                         <i class='raise fa fa-arrow-up' v-if="banks[i].commitments[2] == 'RAISE'"></i>
                         <i class='stick fa fa-arrow-down' v-else></i>
-                       {{b.rounds[2].score}}<span></td>
+                       {{b.rounds[2].score}}</span></td>
                     </tr>
                     <tr>
                         <td>Final Score</td>
@@ -635,7 +817,7 @@ function thePledge(el){
 
     app.mount(el)
 
-    function Bank ({name, qualities, tokens, publicPressure, investments, commitments}) {
+    function Bank ({name, slogan, tokens, publicPressure, investments, commitments, avatar}) {
         const actions = {
             raise: "RAISE",
             stick: "STICK",
@@ -643,20 +825,21 @@ function thePledge(el){
         }
     
         const bnk = {}
+        bnk.avatar = avatar
         bnk.name = name || ""
-        bnk.qualities = qualities || ""
+        bnk.slogan= slogan || ""
         bnk.tokens = tokens || 10
         bnk.publicPressure = publicPressure || false
         bnk.lobbyVotes = {
             greensubsidies: actions.undecided,
             enhancedcreditguidance: actions.undecided
         }
-        bnk.investments = investments || {
+        bnk.investments = investments ? Object.assign({}, investments) : {
             concredible : actions.undecided,
             behemoss: actions.undecided
         }
         bnk.actions = actions
-        bnk.commitments = commitments || [
+        bnk.commitments = commitments ? [...commitments] : [
             actions.undecided,
             actions.undecided,
             actions.undecided
@@ -787,10 +970,16 @@ function thePledge(el){
         return {score: score, messages: messages}
     }
 
-    function getFinalScore(bank, banks) {
+    function getFinalScore(bank, banks, investments) {
         let score = getRoundThreeScore(bank, banks).score
         if(bank.publicPressure){
             score += 2
+        }
+        if(investments.concredible.successful){
+            score += 1 + bank.investments.concredible * 1
+        }
+        if(investments.behemoss.successful){
+            score += 1 + bank.investments.behemoss * 1
         }
         // investment
         return {score: score}
@@ -819,6 +1008,18 @@ function thePledge(el){
             pv.credits += cv.lobbyVotes.enhancedcreditguidance
             return pv
         }, {green: 0, credits: 0})
-        return votes.green > votes.credits ? regulations.green : regulations.credits 
+        if(votes.green == votes.credits || typeof votes.credits != 'number' || typeof votes.green != 'number') {
+            return "TIE"
+        } else {
+            return votes.green > votes.credits ? regulations.green : regulations.credits 
+        }
     }
+
+    function avatars(){
+        return [
+            'fa-egg', 'fa-skull-cow', 'fa-galaxy'
+        ]
+    }
+
+    
 }

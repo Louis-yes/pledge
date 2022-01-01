@@ -33,6 +33,7 @@
     --p: 2.3rem;
     --pp: 2rem;
     --ppp: 1.9rem;
+    --pppp: 1.5rem;
     --heavy: 500;
     --medium: 400;
     --light: 300;
@@ -42,7 +43,7 @@
 
 @media screen and (min-height: 629px) {
     :root {
-        font-size: 12pt;
+        font-size: 13pt;
     }
 }
 
@@ -76,6 +77,8 @@ body {
 .pressie-nav .text {
     opacity: .6;
     font-weight: 300;
+    font-size: var(--ppp);
+    color: var(--black);
     /* font-style: italic; */
     margin: 0 20px 0 0;
     text-align: left;
@@ -84,7 +87,8 @@ body {
 
 .pressie-nav .next { 
     background-color: var(--green);
-    font-size: 1.4em;
+    font-size: 1.2em;
+    font-weight: 300;
     color: var(--white);
 }
 
@@ -107,10 +111,11 @@ body {
 .slide {
     width: 100vw; height: 100vh;
 
-    padding: 4rem;
+    padding: 6rem;
 
     font-family: var(--font); font-size: 1.5em; color: var(--color);
     font-size: var(--p);
+    line-height: 1.2;
 }
 .slide.visible{ display: flex; }
 .slide article { width: 100%; }
@@ -120,10 +125,22 @@ body {
 .slide h3 {
     font-weight: var(--medium);
     margin-top: 0;
+    margin-bottom: 0;
 }
 
 .slide strong { font-weight: var(--heavy); }
 .slide em { color: var(--green); }
+
+.slide p {
+    display: inline-block;
+    max-width: 90rem;
+    margin-block-start: .5em;
+    margin-block-end: .5em;
+}
+
+.slide.scores {
+    padding-top: 2rem;
+}
 
 /* Next prompt */
 .next-prompt {
@@ -136,8 +153,14 @@ body {
     opacity: .3;
 }
 
+.middle-title {
+    display: flex;
+    align-items: center;
+}
+
 /* Title page */
-.index-0{ justify-content:left; }
+.index-0 { justify-content:left; }
+.index-0 .pressie-nav .text { font-style: italic; }
 .index-0 h1 { 
     position: absolute;
     left: 100px;
@@ -145,8 +168,9 @@ body {
     margin: 0;
 
     font-size: 3em;
-    font-weight: 600;
+    font-weight: 400;
 }
+
 
 /* Bonus  */
 
@@ -187,43 +211,16 @@ body {
     top: 6px;
 }
 
-.investment-decision svg {
-    position: absolute;
-    left: -80px;
-    top: 5px;
-}
+.investments .commitment { font-size: 3rem; }
+.investments .commitment table {width: 120px;}
 
-.investment-decision li:first-of-type svg {
-    fill: var(--orange);
-}
+.bank-action-form .investments div * { width: 90px; }
 
-.investment-decision li:nth-of-type(2) svg {
-    fill: var(--green-hl);
-}
+.net-zero-options ul { padding-left: 100px; }
 
-.net-zero-options ul {
-    padding-left: 100px;
-}
+.raise {  color: var(--blue-light);  }
+.stick {  color: var(--blue); }
 
-.raise { 
-    fill: var(--blue-light); 
-    color: var(--blue-light); 
-}
-.stick { 
-    fill: var(--blue); 
-    color: var(--blue); 
-}
-
-.raise svg, 
-.stick svg {
-    top: 10px;
-    width: 34px;
-    position: relative;
-}
-
-
-.raise svg { transform: rotate(-90deg); }
-.stick svg { transform: rotate(90deg); }
 /**********************************************************************************************/
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -234,7 +231,7 @@ body {
 /* Generic */
 .btn {
     border-radius: 50%;
-    width: 118px; height: 118px;
+    width: 100px; height: 100px;
     cursor: pointer;
     transition: transform .1s ease-in-out;
     align-items: center; 
@@ -242,8 +239,10 @@ body {
     justify-content: center;
 }
 .btn:hover { transform: translateY(-3px); }
-.btn svg { width: 100%; }
 .white { color: var(--white) }
+
+.hover { transition: transform .1s ease-in-out; }
+.hover:hover { transform: translateY(-3px); }
 
 .bg-red {background-color: var(--red);}
 .bg-green { background-color: var(--green-hl); }
@@ -277,9 +276,8 @@ body {
     height: 300px;
 }
 
-.add-bank {
-    flex-shrink: 0;
-}
+.add-bank { flex-shrink: 0; }
+.banks .add-bank { margin: 0 0 0 54px; }
 
 .no-banks .instruction {
     font-size: var(--pp);
@@ -300,9 +298,11 @@ body {
 
 .remove {
     position: absolute;
-    top: 30px; right: 30px;
+    top: 22px; right: 22px;
+    color: var(--grey);
     padding: 10px;
     cursor: pointer;
+    font-size: .6em;
 }
 
 .remove svg {
@@ -322,6 +322,10 @@ body {
     background-color: rgba(0,0,0,.4);
 }
 
+.bank-action-form .avatar {
+    font-size: 5rem;
+}
+
 .bank-action-form form {
     width: 500px;
     height: 600px;
@@ -330,6 +334,9 @@ body {
     padding: 80px;
     text-align: center;
     border-radius: 50px;
+}
+.investments .bank-action-form form { 
+    padding: 60px;
 }
 
 .bank-action-form input {
@@ -362,7 +369,7 @@ body {
 .banks .bank {
     position: relative;
     margin: 20px;
-    width: 25%; height: 100%;
+    width: 23rem; height: 30rem;
     padding: 30px;
 
     border-radius: 50px;
@@ -370,12 +377,24 @@ body {
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slogan {
+    font-size: 1.8rem;
+    line-height: 1.1;
+    letter-spacing: .8px;
+    font-weight: 300;
+    display: inline-block;
 }
 
 .bank .avatar {
     height: 100px;
     width: 100px;
-    padding-top: 30px;
+    font-size: 4rem;
+    margin-top: 50px;
     display: inline-block;
 }
 
@@ -412,7 +431,8 @@ body {
     justify-content: center;
     text-align: center;
     border-radius: 50%;
-    font-size: 6rem;
+    font-size: 5rem;
+
     transition: transform .1s ease-in-out;
 }
 
@@ -432,11 +452,11 @@ body {
     */
 }
 
-
-
-.actions .bank ul {
+.actions .bank .messages {
     list-style: none;
     padding: 0;
+    font-size: var(--ppp);
+    font-weight: 600;
 }
 
 .bank-action-form .options {
@@ -445,6 +465,9 @@ body {
     width: 100%;
     justify-content: space-around;
 }
+
+.bank-action-form {font-size: 2rem;}
+.bank-action-form .avatar {font-size: 4rem;}
 
 .bank-action-form .options .stick,
 .bank-action-form .options .raise { cursor: pointer; }
@@ -472,12 +495,76 @@ body {
 }
 
 .regulation-votes .vote {
-    padding: 10px 5px;
+    position: relative;
+    padding: 10px 30px;
     margin: 10px;
-    border: 1px solid #000;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     border-radius: 10px;
     cursor: pointer;
+    background-color: var(--green);
+    color: white;
+    font-size: var(--pppp);
 }
+
+.regulation-votes .vote.more {
+    background-color: var(--green-hl);
+    cursor: default;
+}
+
+.regulation-votes .vote.disabled {
+    background-color: var(--grey);
+    cursor: default;
+    color: var(--white)
+}
+
+.regulation-votes .vote-text {
+    padding:0 70px;
+}
+
+.regulation-votes .vote-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    border-radius: 10px;
+    height: 100%;
+    width: 60px;
+   color: var(--green);
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.regulation-votes .add-more {
+    right: 10px;
+}
+
+.regulation-votes .add-less {
+    left: 10px;
+}
+
+
+/* ally pause */
+.ally-pause { margin-top: -50px;}
+.ally-pause .avatar {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+/* mini score */
+
+.miniscore {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+}
+.miniscore td { text-align: center; }
+
+
 
 /* Scoreboard */
 
@@ -495,12 +582,13 @@ body {
 }
 
 .scoreboard td {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .scoreboard td:first-child {
     text-align: right;
     width: 300px;
+
 }
 
 .scoreboard tr {
@@ -524,11 +612,87 @@ body {
 }
 
 .news-update {
+    position: absolute;
+    top: 2rem;
+    right: 1rem;
+    left: 1rem;
+    bottom: 0;
     background-color: var(--white);
-    border-radius: 20px;
+    border-radius: 20px 20px 0 0;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    padding: 100px;
+    padding: 70px 100px;
 }
+
+.news-update h1,
+.news-update h2 {
+    text-align: center;
+}
+
+.news-update .pullquote {
+    position: relative;
+}
+
+.news-update .quote {
+    width: 900px;
+    position: absolute;
+    right: 80px;
+    top: 30px;
+    padding: 20px;
+    background-color: var(--orange-light);
+    cursor: pointer;
+}
+
+.news-update .figure-title {
+    top: 229px;
+    left: 329px;
+    position: absolute;
+}
+
+.news-update .figure-img {
+    background-color: tomato;
+    position: absolute;
+    left: 51px;
+    top: 80px;
+    height: 300px;
+    width: 200px;
+}
+
+/* ally results */
+
+.public-pressure-results {
+    display: flex;
+    justify-content: space-around;
+}
+.public-pressure-results .bank { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* investment results */
+.investment-results {
+    padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.investment-results div { margin: 20px; }
+.investment-results div i { margin-right: 35px; }
+
+.investment-results-plus {
+    padding: 6rem 9rem;
+    position: relative;
+}
+
+.investment-results-plus h3 i {
+    position: absolute;
+    left: 5rem;
+    top: 6rem;
+ }
+
 
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -550,7 +714,7 @@ body {
     line-height: 1;
 }
 .tooltip.content {
-    width: 550px;
+    width: 650px;
     padding: 40px;
     background-color: var(--white);
     border-radius: 50px;
