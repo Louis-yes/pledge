@@ -882,13 +882,22 @@ For those banks that invested in this research, I'm afraid you won't make your m
 
 </div>
 
+<next>Proceed.</next>
+
+
 ---
 
-<scoreboard :score="score" rounds="['Round 1', 'Interstitial A', 'Round 2', 'Interstitial B', 'Round 3', 'Final Score']" :banks="banks" />
+<slide class="scores" />
 
+<div>
+    <scoreboard :score="score" rounds="['Round 1', 'Interstitial A', 'Round 2', 'Interstitial B', 'Round 3', 'Final Score']" :banks="banks"></scoreboard>
+    <next>When you’re ready, proceed.</next>
+</div>
 ---
 
 The most successful bank in terms of market advantage was {{score.banks.reduce((p,v) => { return p['Final Score'] > v['Final Score'] ? p : v }).name}} Bank. Well done!
+
+<next>Proceed.</next>
 
 ---
 
@@ -897,6 +906,9 @@ The most successful bank in terms of market advantage was {{score.banks.reduce((
 Finally, how did we go with our transition to net zero?
 In this game, we use the decisions you made as an indication of how the financial sector as a whole manages the transition to net zero.
 The more raised commitments you made collectively, the better for the planet.
+
+<next>Proceed.</next>
+
 
 ---
 
@@ -910,13 +922,21 @@ Thanks to the deployment of the new carbon capture technology, there has been a 
 
 In our model, that places us on a pathway to {{score.degrees}} degrees above preindustrial levels.
 
+<next>Proceed.</next>
+
+
 ---
+<slide class="degrees" />
+
 <div v-if="score.degrees == 1.5">
 
 # 1.5 
 At the end of the 2020s, the world is on a Paris-aligned pathway to 1.5 degrees above preindustrial levels.
+
 There will be an increase in severe weather events, the loss of many coastal ecosystems and the drying out of many agricultural regions, affecting hundreds of millions of people.
+
 But thanks to the proactive response by the finance sector in the 2020s, the damage is far less than it could have been. Banks worked together to cut off funding for fossil fuels, to decarbonise across sectors, and to support the global transition to net zero.
+
 There will still be some significant disruptions to the financial system expected over the coming decades, but because of the extraordinary leadership of the banks, it's possible to imagine a future on a healthy planet.
 
 </div>
@@ -924,8 +944,11 @@ There will still be some significant disruptions to the financial system expecte
 
 # 2
 In the 2020s, the finance sector moved away to cut off funding for fossil fuels, to decarbonise across sectors, and to support the global transition to net zero.
+
 Unfortunately, the sector did not quickly enough to achieve the goals of the Paris Agreement. There was disagreement and conflict within the sector, and as a result, the planet is on track for roughly 2 degrees warming.
+
 That means a massive increase in severe weather events, the loss of many coastal ecosystems and the drying out of many agricultural regions. Some regions of the tropics may become uninhabitable due to rising heat, meaning the forced migration of millions of people by the end of the century. Massive recessions are very likely and there will be significant disruptions to the financial system.
+
 But thanks to the hard work of many people in different banks, the damage is less than it could have been, and we can hope for a better future on the planet.
 
 </div>
@@ -933,30 +956,43 @@ But thanks to the hard work of many people in different banks, the damage is les
 
 # 3
 In the 2020s, the finance sector struggled to transition away from carbon-intensive investments. Although some banks made serious commitments, many dragged their feet. There were many disagreements and very little trust.
+
 As a result, we have missed the Paris targets by a large margin. The planet is on a pathway to approximately 3 degrees warming.
+
 This means the likely collapse of many ecosystems, the loss of many coastal cities. Large regions of the tropics will be uninhabitable due to rising heat, meaning the forced migration of hundreds of millions of people by the end of the century. Massive recessions are guaranteed and the collapse of the current economic system is a remote but real possibility.
+
 But thanks to the hard work of many people in different banks, the damage is less than it could have been, and we can hope for a better future on the planet.
 
 </div>
 <div v-if="score.degrees == 3.5">
 
-3.5
+# 3.5
+
 In the 2020s, the finance sector failed to transition away from carbon-intensive investments.Although some banks made attempts to adjust, most dragged their feet.
+
 As a result, we have missed the Paris targets by a large margin. The planet is on a pathway to a predicted 3.5 degrees warming.
+
 This means the likely collapse of many ecosystems, the loss of coastal cities. Large regions of the tropics will be uninhabitable due to rising heat, meaning the forced migration of hundreds of millions of people by the end of the century. Massive recessions are guaranteed and the collapse of the current economic system is a very real possibility.
 
 </div>
+
+
+<next>Proceed.</next>
+
 ---
+
+<slide class="debrief" />
 
 # Debrief
 
 Thank you for playing The Pledge. We'd like to leave you with three questions to discuss among yourselves.
 
 1. How did you balance profitability for your bank and planetary well-being while playing the game?
-
 2. What do you think is required in order to accelerate the decarbonisation of the banking sector and the real economy?
-
 3. What actions are you able to take to help the transition to net zero?
+
+
+<next>Proceed.</next>
 
 ---
 

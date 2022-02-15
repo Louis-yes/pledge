@@ -111,7 +111,7 @@ body {
 .slide {
     width: 100vw; height: 100vh;
 
-    padding: 6rem;
+    padding: 4rem 6rem;
 
     font-family: var(--font); font-size: 1.5em; color: var(--color);
     font-size: var(--p);
@@ -221,6 +221,14 @@ body {
 .raise {  color: var(--blue-light);  }
 .stick {  color: var(--blue); }
 
+.debrief li {
+    margin: 20px 0;
+}
+
+.slide.degrees p {
+    font-size: var(--ppp);
+}
+
 /**********************************************************************************************/
 /**********************************************************************************************/
 /**********************************************************************************************/
@@ -237,6 +245,8 @@ body {
     align-items: center; 
     display: flex;
     justify-content: center;
+
+    border: none;
 }
 .btn:hover { transform: translateY(-3px); }
 .white { color: var(--white) }

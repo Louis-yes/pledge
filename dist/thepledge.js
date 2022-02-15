@@ -12,40 +12,52 @@ thePledge(document.querySelector("#app"))
 
 function thePledge(el){
     const initialBanks = [
-        // new Bank({
-        //     name: "Armadillo", 
-        //     avatar: "fa-galaxy",
-        //     slogan: "Curl up and stay safe",
-        //     tokens: 10, 
-        //     commitments: ["RAISE","RAISE","RAISE"],
-        //     investments: {
-        //         behemoss: 1,
-        //         concredible: 0
-        //     },
-        //     publicPressure: true
-        // }),
-        // new Bank({
-        //     name: "Vulture",
-        //     avatar: 'fa-skull-cow', 
-        //     slogan: "Do whats necessary, not what's popular",
-        //     tokens: 10, 
-        //     commitments: ["STICK","STICK","STICK"],
-        //     investments: {
-        //         behemoss: 1,
-        //         concredible: 1
-        //     }
-        // }),
-        // new Bank({
-        //     name: "Penguin", 
-        //     avatar: 'fa-egg',
-        //     slogan: "Huddle up and wait out the winter",
-        //     tokens: 10, 
-        //     commitments: ["STICK", "RAISE", "RAISE"],
-        //     investments: {
-        //         behemoss: 2,
-        //         concredible: 1
-        //     }
-        // })
+        new Bank({
+            name: "Armadillo", 
+            avatar: "fa-galaxy",
+            slogan: "Curl up and stay safe",
+            tokens: 10, 
+            commitments: ["RAISE","RAISE","RAISE"],
+            investments: {
+                behemoss: 1,
+                concredible: 0
+            },
+            lobbyVotes: {
+              greensubsidies : 0,
+              enhancedcreditguidance: 2
+            },
+            publicPressure: true
+        }),
+        new Bank({
+            name: "Vulture",
+            avatar: 'fa-skull-cow', 
+            slogan: "Do whats necessary, not what's popular",
+            tokens: 10, 
+            commitments: ["STICK","STICK","STICK"],
+            investments: {
+                behemoss: 1,
+                concredible: 1
+            },
+            lobbyVotes: {
+                greensubsidies : 1,
+                enhancedcreditguidance: 0
+            },
+        }),
+        new Bank({
+            name: "Penguin", 
+            avatar: 'fa-egg',
+            slogan: "Huddle up and wait out the winter",
+            tokens: 10, 
+            commitments: ["STICK", "RAISE", "RAISE"],
+            investments: {
+                behemoss: 2,
+                concredible: 1
+            },
+            lobbyVotes: {
+                greensubsidies : 2,
+                enhancedcreditguidance: 0
+            }
+        })
         // new Bank({
         //     name: "Tiger", 
         //     tokens: 10, 
@@ -302,7 +314,7 @@ function thePledge(el){
                         <input id="bankname" v-model="templateBank.name" placeholder="" class="input">
                         <label for="bankname">What's your slogan?</label>
                         <input id="bankslogan" v-model="templateBank.slogan" placeholder="" class="input">
-                        <div class="bank-ok btn" @click="submitNewBankEditor"><i class="fa fa-check white"></i></div>
+                        <button class="bank-ok btn"><i class="fa fa-check white"></i></button>
                     </form>
                 </div>
             </transition>
@@ -817,7 +829,7 @@ function thePledge(el){
 
     app.mount(el)
 
-    function Bank ({name, slogan, tokens, publicPressure, investments, commitments, avatar}) {
+    function Bank ({name, slogan, tokens, publicPressure, investments, commitments, avatar, lobbyVotes}) {
         const actions = {
             raise: "RAISE",
             stick: "STICK",
@@ -830,7 +842,7 @@ function thePledge(el){
         bnk.slogan= slogan || ""
         bnk.tokens = tokens || 10
         bnk.publicPressure = publicPressure || false
-        bnk.lobbyVotes = {
+        bnk.lobbyVotes = lobbyVotes || {
             greensubsidies: actions.undecided,
             enhancedcreditguidance: actions.undecided
         }
